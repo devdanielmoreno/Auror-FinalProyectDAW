@@ -85,8 +85,10 @@ class GameScene extends Phaser.Scene {
         const runasLayer = map.createLayer('runas', tilecosas);
 
         this.player = new Player(this, 50, 340, "player");
+        this.enemy = new Enemy(this, this.getRandomX(), this.getRandomY(), "enemy");
         this.player.scene = this;
         this.physics.add.collider(this.player, obstaLayer)
+        this.physics.add.collider(this.enemy, obstaLayer)
         obstaLayer.setCollisionBetween(65, 189)
         this.physics.add.collider(this.player, wallLayer)
         wallLayer.setCollisionBetween(338, 437)
@@ -142,8 +144,7 @@ class GameScene extends Phaser.Scene {
             frameRate: 10
         });
 
-
-        this.enemy = new Enemy(this, this.getRandomX(), this.getRandomY(), "enemy");
+        
 
         this.lastAttackTime = 0;
         this.invincibleTime = 0;
@@ -235,7 +236,6 @@ class GameScene extends Phaser.Scene {
             this.scene.launch('scene-options');
             this.bgMusica.pause();
         });
-        this.enemy.hpBar.setPosition(this.enemy.x - this.enemy.displayWidth / 2, this.enemy.y + this.enemy.displayHeight / 2 + 10);
         if (Phaser.Input.Keyboard.JustDown(this.xKey)) {
             this.player.roll();
         }
@@ -250,6 +250,8 @@ class GameScene extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.zKey)) {
             this.player.attack(this.enemy);
         }
+        this.enemy.hpbar();
+
         if (this.player && this.enemy && this.enemy.body) {
             const distance = Phaser.Math.Distance.Between(
                 this.player.x,
@@ -339,7 +341,7 @@ class GameScene extends Phaser.Scene {
             const baraColor = this.player.hp <= 20 ? 0xff0000 : (this.player.hp <= 50 ? 0xffff00 : 0x00ff00);
             this.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
 
-            this.sound.play("enemyAttack");
+            this.sound.play("enemyAttack", { volume: 0.2 });
         }
     }
 

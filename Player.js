@@ -39,7 +39,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.isAttacking = true;
         this.anims.play(attackAnim, true);
         this.setDepth();
-        this.scene.sound.play('playerAttack');
+        this.scene.sound.play('playerAttack', { volume: 0.2 });
         this.setVelocity(0);
     
         this.once('animationcomplete', () => {
@@ -84,7 +84,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.setAlpha(0.5);
             this.anims.stop();
             this.anims.play('roll_effect', true);
-            this.scene.sound.play('playerRoll');
+            this.scene.sound.play('playerRoll', { volume: 0.2 });
             this.setVelocity(0);
             this.scene.lastRollTime = this.scene.time.now;
             this.scene.invincibleTime = this.scene.time.now + 1000;

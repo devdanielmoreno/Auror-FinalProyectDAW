@@ -29,9 +29,13 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.hpBar.fillStyle(barColor);
         this.hpBar.fillRect(0, 0, barWidthValue, barHeight);
         this.hpBar.setDepth(1);
+        
     }
 
     update() {
         this.updateHealthBar(); 
+    }
+    hpbar(){
+        this.hpBar.setPosition(this.x - this.displayWidth / 2, this.y + this.displayHeight / 12 - 90).setDepth(9000);
     }
 }
