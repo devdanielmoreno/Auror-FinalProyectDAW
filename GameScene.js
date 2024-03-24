@@ -60,9 +60,6 @@ class GameScene extends Phaser.Scene {
     create() {
         //restrablece las variables al morir si quiero que se guarde una piedra no pongo que se vuelva a poner por defecto
         this.rollCharges = 3;
-        this.lastRollTime = 0;
-        this.isRolling = false;
-        this.isAttacking = false;
         ///////////////////////////////////////
 
         this.bgMusica = this.sound.add("bgMusica");
