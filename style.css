@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+:root {
+  font-family: "Orbitron", sans-serif;
+  --dkClr: #181818;
+  --liClr: whitesmoke;
+  --accClr: #0d0d35;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--dkClr);
+  color: var(--liClr);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+main {
+  flex: 1;
+  display: flex;
+}
+
+#gameCanvas {
+  top: 50%;
+  left: 50%;
+}
