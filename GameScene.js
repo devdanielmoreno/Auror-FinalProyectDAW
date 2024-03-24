@@ -43,6 +43,8 @@ class GameScene extends Phaser.Scene {
         this.load.atlas("roll_effect", "assets/roll_effect.png", "assets/roll.json");
         this.load.atlas("hit_effect", "assets/hit.png", "assets/hit.json");
         this.load.atlas("player_death", "assets/death.png", "assets/death.json");
+        this.load.atlas("arriba", "assets/arriba.png", "assets/arriba.json");
+        this.load.atlas("abajo", "assets/abajo.png", "assets/abajo.json");
         this.load.image("enemy", "assets/enemy.png");
         this.load.image("barra", "assets/barra.png");
         this.load.image("dialog", "assets/dialog.png");
@@ -101,51 +103,6 @@ class GameScene extends Phaser.Scene {
 
         this.cameras.main.startFollow(this.player);
 
-
-        this.anims.create({
-            key: 'playerSprite',
-            frames: this.anims.generateFrameNames('player', { prefix: 'playerSprite', end: 1, zeroPad: 5 }),
-            repeat: -1,
-            frameRate: 3
-        });
-        this.anims.create({
-            key: 'playerRun',
-            frames: this.anims.generateFrameNames('playerRun', { prefix: 'run', end: 7, zeroPad: 5 }),
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'player_attack1',
-            frames: this.anims.generateFrameNames('player_attack', { prefix: 'attack', end: 4, zeroPad: 5 }),
-            frameRate: 15
-        });
-        this.anims.create({
-            key: 'player_attack2',
-            frames: this.anims.generateFrameNames('player_attack', { prefix: 'attack2', end: 4, zeroPad: 5 }),
-            frameRate: 15
-        });
-        this.anims.create({
-            key: 'player_attack3',
-            frames: this.anims.generateFrameNames('player_attack', { prefix: 'attack3', end: 4, zeroPad: 5 }),
-            frameRate: 15
-        });
-        this.anims.create({
-            key: 'roll_effect',
-            frames: this.anims.generateFrameNames('roll_effect', { prefix: 'roll', end: 3, zeroPad: 5 }),
-            frameRate: 13
-        });
-        this.anims.create({
-            key: 'hit_effect',
-            frames: this.anims.generateFrameNames('hit_effect', { prefix: 'hit', end: 3, zeroPad: 5 }),
-            frameRate: 4
-        });
-        this.anims.create({
-            key: 'player_death',
-            frames: this.anims.generateFrameNames('player_death', { prefix: 'death', end: 6, zeroPad: 5 }),
-            frameRate: 10
-        });
-
-        
-
         this.lastAttackTime = 0;
         this.invincibleTime = 0;
 
@@ -168,13 +125,6 @@ class GameScene extends Phaser.Scene {
 
         this.cartel = this.add.image(300, 180, "dialog").setVisible(false);
 
-        this.cursor = this.input.keyboard.createCursorKeys();
-        this.zKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
-        this.xKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
-        this.cKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
-        this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-
-
         this.events.on('playerDead', () => {
             this.scene.pause();
             this.bgMusica.stop();
@@ -193,6 +143,13 @@ class GameScene extends Phaser.Scene {
         this.events.on('updateHealthBar', () => {
             this.enemy.updateHealthBar();
         });
+
+        this.cursor = this.input.keyboard.createCursorKeys();
+        this.zKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        this.xKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        this.cKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+        this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
     }
 
     update() {
@@ -220,10 +177,10 @@ class GameScene extends Phaser.Scene {
 
             if (up.isDown) {
                 this.player.setVelocityY(-this.playerSpeed);
-                this.player.anims.play('playerRun', true);
+                this.player.anims.play('arriba', true);
             } else if (down.isDown) {
                 this.player.setVelocityY(this.playerSpeed);
-                this.player.anims.play('playerRun', true);
+                this.player.anims.play('abajo', true);
             } else {
                 this.player.setVelocityY(0);
             }
@@ -248,8 +205,9 @@ class GameScene extends Phaser.Scene {
             this.events.emit('playerDead');
         }
         if (Phaser.Input.Keyboard.JustDown(this.zKey)) {
-            this.player.attack(this.enemy);
+            this.player.attack();
         }
+
         this.enemy.hpbar();
 
         if (this.player && this.enemy && this.enemy.body) {
