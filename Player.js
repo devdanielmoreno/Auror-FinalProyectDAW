@@ -64,7 +64,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.create({
             key: 'hit_effect',
             frames: this.anims.generateFrameNames('hit_effect', { prefix: 'hit', end: 3, zeroPad: 5 }),
-            frameRate: 20
+            frameRate: 10
         });
         this.anims.create({
             key: 'player_death',

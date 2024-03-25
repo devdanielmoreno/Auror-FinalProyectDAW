@@ -29,34 +29,34 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('base_tiles', 'assets/TX Tileset Grass.png')
-        this.load.image('obsta', 'assets/TX Plant.png')
-        this.load.image('stairs', 'assets/TX Struct.png')
-        this.load.image('stone', 'assets/TX Tileset Stone Ground.png')
-        this.load.image('wall', 'assets/TX Tileset Wall.png')
-        this.load.image('cosas', 'assets/TX Props.png')
-        this.load.tilemapTiledJSON('tilemap', 'assets/MapaP2.json')
+        this.load.image('base_tiles', 'assets/Mapa/TX Tileset Grass.png')
+        this.load.image('obsta', 'assets/Mapa/TX Plant.png')
+        this.load.image('stairs', 'assets/Mapa/TX Struct.png')
+        this.load.image('stone', 'assets/Mapa/TX Tileset Stone Ground.png')
+        this.load.image('wall', 'assets/Mapa/TX Tileset Wall.png')
+        this.load.image('cosas', 'assets/Mapa/TX Props.png')
+        this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/MapaP2.json')
 
-        this.load.atlas("player", "assets/player.png", "assets/playerSprites.json");
-        this.load.atlas("playerRun", "assets/run.png", "assets/playerRun.json");
-        this.load.atlas("player_attack", "assets/player_attack.png", "assets/attack.json");
-        this.load.atlas("roll_effect", "assets/roll_effect.png", "assets/roll.json");
-        this.load.atlas("hit_effect", "assets/hit.png", "assets/hit.json");
-        this.load.atlas("player_death", "assets/death.png", "assets/death.json");
-        this.load.atlas("arriba", "assets/arriba.png", "assets/arriba.json");
-        this.load.atlas("abajo", "assets/abajo.png", "assets/abajo.json");
-        this.load.image("enemy", "assets/enemy.png");
-        this.load.image("barra", "assets/barra.png");
-        this.load.image("dialog", "assets/dialog.png");
-        this.load.image("rollbar1", "assets/roll.png");
-        this.load.image("rollbar2", "assets/roll2.png");
-        this.load.image("rollbar3", "assets/roll3.png");
-        this.load.image("rollbar4", "assets/roll4.png");
+        this.load.atlas("player", "assets/jugador/player.png", "assets/jugador/playerSprites.json");
+        this.load.atlas("playerRun", "assets/jugador/run.png", "assets/jugador/playerRun.json");
+        this.load.atlas("player_attack", "assets/jugador/player_attack.png", "assets/jugador/attack.json");
+        this.load.atlas("roll_effect", "assets/jugador/roll_effect.png", "assets/jugador/roll.json");
+        this.load.atlas("hit_effect", "assets/jugador/hit.png", "assets/jugador/hit.json");
+        this.load.atlas("player_death", "assets/jugador/death.png", "assets/jugador/death.json");
+        this.load.atlas("arriba", "assets/jugador/arriba.png", "assets/jugador/arriba.json");
+        this.load.atlas("abajo", "assets/jugador/abajo.png", "assets/jugador/abajo.json");
+        this.load.image("enemy", "assets/enemigos/enemy.png");
+        this.load.image("barra", "assets/HUD/barra.png");
+        this.load.image("dialog", "assets/HUD/dialog.png");
+        this.load.image("rollbar1", "assets/HUD/roll.png");
+        this.load.image("rollbar2", "assets/HUD/roll2.png");
+        this.load.image("rollbar3", "assets/HUD/roll3.png");
+        this.load.image("rollbar4", "assets/HUD/roll4.png");
 
-        this.load.audio("bgMusica", "assets/musica.ogg");
-        this.load.audio("enemyAttack", "assets/enemyAttack.mp3");
-        this.load.audio("playerAttack", "assets/playerAttack.mp3");
-        this.load.audio("playerRoll", "assets/playerRoll.mp3");
+        this.load.audio("bgMusica", "assets/Musica/musica.ogg");
+        this.load.audio("enemyAttack", "assets/Musica/enemyAttack.mp3");
+        this.load.audio("playerAttack", "assets/Musica/playerAttack.mp3");
+        this.load.audio("playerRoll", "assets/Musica/playerRoll.mp3");
     }
 
     create() {
@@ -130,8 +130,7 @@ class GameScene extends Phaser.Scene {
             this.bgMusica.stop();
             this.scene.run('scene-dead');
         });
-
-
+        
         this.rollbars = [
             this.add.image(87, 110, "rollbar1").setDepth(9001).setScrollFactor(0).setVisible(false),
             this.add.image(87, 110, "rollbar2").setDepth(9001).setScrollFactor(0).setVisible(false),

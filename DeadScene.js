@@ -11,7 +11,7 @@ class DeadScene extends Phaser.Scene {
         this.muerte
     }
     preload() {
-        this.load.audio("muerte", "assets/muerte.ogg");
+        this.load.audio("muerte", "assets/Musica/muerte.ogg");
     }
     create() {
         this.muerte = this.sound.add("muerte");

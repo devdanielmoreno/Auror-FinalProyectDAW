@@ -12,10 +12,10 @@ class MenuScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("background", "assets/Mapa.png");
-        this.load.image("startButton", "assets/boton.png");
-        this.input.setDefaultCursor('url(assets/cursor.png), pointer');
-        this.load.audio("mInicio", "assets/inicio.ogg");
+        this.load.image("background", "assets/Mapa/Mapa.png");
+        this.load.image("startButton", "assets/HUD/boton.png");
+        this.input.setDefaultCursor('url(assets/HUD/cursor.png), pointer');
+        this.load.audio("mInicio", "assets/Musica/inicio.ogg");
     }
 
     create() {

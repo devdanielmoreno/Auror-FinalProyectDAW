@@ -13,7 +13,7 @@ class OpcionesScene extends Phaser.Scene {
     }
 
     preload() {
-        this.input.setDefaultCursor("url(assets/cursor.png), pointer");
+        this.input.setDefaultCursor("url(assets/HUD/cursor.png), pointer");
     }
 
     create() {
@@ -58,9 +58,6 @@ class OpcionesScene extends Phaser.Scene {
             this.volume = Math.min(this.volume + 0.1, 1);
             volumeFill.setScale(1, this.volume);
             this.scene.get("scene-game").bgMusica.setVolume(this.volume);
-            this.scene.get("scene-game").enemyAttack.setVolume(this.volume);
-            this.scene.get("scene-game").playerAttack.setVolume(this.volume);
-            this.scene.get("scene-game").playerRoll.setVolume(this.volume);
         });
 
         const volumeDownArea = this.add.rectangle(
@@ -76,9 +73,6 @@ class OpcionesScene extends Phaser.Scene {
             this.volume = Math.max(this.volume - 0.1, 0);
             volumeFill.setScale(1, this.volume);
             this.scene.get("scene-game").bgMusica.setVolume(this.volume);
-            this.scene.get("scene-game").enemyAttack.setVolume(this.volume);
-            this.scene.get("scene-game").playerAttack.setVolume(this.volume);
-            this.scene.get("scene-game").playerRoll.setVolume(this.volume);
         });
 
         this.add
