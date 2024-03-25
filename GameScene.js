@@ -227,29 +227,7 @@ class GameScene extends Phaser.Scene {
             this.enemy.flipX = true; 
         }
         if (this.player && this.enemy && this.enemy.body) {
-            const distance = Phaser.Math.Distance.Between(
-                this.player.x,
-                this.player.y,
-                this.enemy.x,
-                this.enemy.y
-            );
-
-            const moveEnemy = () => {
-                if (distance <= 400) {
-                    if (distance <= 20) {
-                        this.enemy.setVelocity(0);
-                        this.enemy.anims.play('goblinAttack', true);
-                    } else {
-                        this.enemy.anims.play('goblinRun', true);
-                        this.physics.moveToObject(this.enemy, this.player);
-                    }
-                } else  {
-                    this.enemy.anims.play('goblinIdle', true);
-                    this.enemy.setVelocity(0);
-                }
-            };
-
-            moveEnemy();
+            this.enemy.updateMovement();
         }
         
         const distance = Phaser.Math.Distance.Between(

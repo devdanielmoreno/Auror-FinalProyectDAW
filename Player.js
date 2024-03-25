@@ -14,8 +14,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setImmovable(true);
         this.body.allowGravity = false;
         this.setCollideWorldBounds(true);
+
         this.hp = 100;
         this.maxHp = 100;
+
         this.scene = scene;
 
         this.anims.create({
@@ -111,8 +113,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
             if (distance <= 130) {
                 this.scene.enemy.hp -= attackDamage;
+                this.scene.enemy.handleHit();
                 if (this.scene.enemy.hp <= 0) {
-                    this.scene.enemy.destroy();
+                    this.scene.time.delayedCall(500, () => {
+                        this.scene.enemy.destroy();
+                    });
                     if (this.hp < this.maxHp) {
                         this.hp = Math.min(this.maxHp, this.hp + 5);
                         this.scene.healthText.setText(`${this.hp}/100`);
@@ -176,7 +181,4 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     moveRight() {
         this.setVelocityX(50);
     }
-
-
-
 }
