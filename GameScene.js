@@ -29,6 +29,7 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
+        /////Mapa//////
         this.load.image('base_tiles', 'assets/Mapa/TX Tileset Grass.png')
         this.load.image('obsta', 'assets/Mapa/TX Plant.png')
         this.load.image('stairs', 'assets/Mapa/TX Struct.png')
@@ -37,6 +38,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('cosas', 'assets/Mapa/TX Props.png')
         this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/MapaP2.json')
 
+        /////Player//////
         this.load.atlas("player", "assets/jugador/player.png", "assets/jugador/playerSprites.json");
         this.load.atlas("playerRun", "assets/jugador/run.png", "assets/jugador/playerRun.json");
         this.load.atlas("player_attack", "assets/jugador/player_attack.png", "assets/jugador/attack.json");
@@ -45,7 +47,16 @@ class GameScene extends Phaser.Scene {
         this.load.atlas("player_death", "assets/jugador/death.png", "assets/jugador/death.json");
         this.load.atlas("arriba", "assets/jugador/arriba.png", "assets/jugador/arriba.json");
         this.load.atlas("abajo", "assets/jugador/abajo.png", "assets/jugador/abajo.json");
-        this.load.image("enemy", "assets/enemigos/enemy.png");
+
+
+        /////Enemigos/////
+        this.load.atlas("goblinIdle", "assets/enemigos/goblin/goblinIdle.png","assets/enemigos/goblin/goblin.json");
+        this.load.atlas("goblinRun", "assets/enemigos/goblin/goblinRun.png","assets/enemigos/goblin/goblinRun.json");
+        this.load.atlas("goblinAttack", "assets/enemigos/goblin/goblinAttack.png","assets/enemigos/goblin/goblinAttack.json");
+        this.load.atlas("goblinHit", "assets/enemigos/goblin/goblinHIt.png","assets/enemigos/goblin/goblinHit.json");
+        this.load.atlas("goblinDeath", "assets/enemigos/goblin/goblinDeath.png","assets/enemigos/goblin/goblinDeath.json");
+
+        /////HUD/////
         this.load.image("barra", "assets/HUD/barra.png");
         this.load.image("dialog", "assets/HUD/dialog.png");
         this.load.image("rollbar1", "assets/HUD/roll.png");
@@ -53,6 +64,7 @@ class GameScene extends Phaser.Scene {
         this.load.image("rollbar3", "assets/HUD/roll3.png");
         this.load.image("rollbar4", "assets/HUD/roll4.png");
 
+        /////Musica/////
         this.load.audio("bgMusica", "assets/Musica/musica.ogg");
         this.load.audio("enemyAttack", "assets/Musica/enemyAttack.mp3");
         this.load.audio("playerAttack", "assets/Musica/playerAttack.mp3");
@@ -62,7 +74,7 @@ class GameScene extends Phaser.Scene {
     create() {
         //restrablece las variables al morir si quiero que se guarde una piedra no pongo que se vuelva a poner por defecto
         this.rollCharges = 3;
-        ///////////////////////////////////////
+        /////
 
         this.bgMusica = this.sound.add("bgMusica");
         this.bgMusica.play();
@@ -87,7 +99,7 @@ class GameScene extends Phaser.Scene {
         const runasLayer = map.createLayer('runas', tilecosas);
 
         this.player = new Player(this, 50, 340, "player");
-        this.enemy = new Enemy(this, this.getRandomX(), this.getRandomY(), "enemy");
+        this.enemy = new Enemy(this, 500,340, "goblinIdle");
         this.player.scene = this;
         this.physics.add.collider(this.player, obstaLayer)
         this.physics.add.collider(this.enemy, obstaLayer)
@@ -209,6 +221,11 @@ class GameScene extends Phaser.Scene {
 
         this.enemy.hpbar();
 
+        if (this.player.x > this.enemy.x) {
+            this.enemy.flipX = false;
+        } else {
+            this.enemy.flipX = true; 
+        }
         if (this.player && this.enemy && this.enemy.body) {
             const distance = Phaser.Math.Distance.Between(
                 this.player.x,
@@ -221,16 +238,20 @@ class GameScene extends Phaser.Scene {
                 if (distance <= 400) {
                     if (distance <= 20) {
                         this.enemy.setVelocity(0);
+                        this.enemy.anims.play('goblinAttack', true);
                     } else {
+                        this.enemy.anims.play('goblinRun', true);
                         this.physics.moveToObject(this.enemy, this.player);
                     }
-                } else {
+                } else  {
+                    this.enemy.anims.play('goblinIdle', true);
                     this.enemy.setVelocity(0);
                 }
             };
 
             moveEnemy();
         }
+        
         const distance = Phaser.Math.Distance.Between(
             this.player.x,
             this.player.y,
@@ -267,21 +288,9 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    enemyHit(player, enemy) {
+    enemyHit() {
         if (this.isRolling) {
             return;
-        }
-        if (this.isAttacking) {
-            if (enemy.hp <= 0) {
-                enemy.destroy();
-                if (this.player.hp < this.player.maxHp) {
-                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + 5);
-                    this.healthText.setText(`${this.player.hp}/100`);
-                    const baraWidth = Math.max(0, this.player.hp / this.player.maxHp * sizes.width / 10);
-                    const baraColor = this.player.hp <= 20 ? 0xff0000 : (this.player.hp <= 50 ? 0xffff00 : 0x00ff00);
-                    this.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
-                }
-            }
         }
         if (this.invincibleTime > this.time.now) {
             return;
@@ -300,14 +309,6 @@ class GameScene extends Phaser.Scene {
 
             this.sound.play("enemyAttack", { volume: 0.2 });
         }
-    }
-
-    getRandomX() {
-        return Math.floor(Math.random() * (sizes.width - 300));
-    }
-
-    getRandomY() {
-        return Math.floor(Math.random() * (sizes.height - 300));
     }
 }
 export default GameScene;

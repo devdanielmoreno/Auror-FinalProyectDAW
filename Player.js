@@ -71,6 +71,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             frames: this.anims.generateFrameNames('player_death', { prefix: 'death', end: 6, zeroPad: 5 }),
             frameRate: 10
         });
+        
     }
 
     attack() {
@@ -110,7 +111,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
             if (distance <= 130) {
                 this.scene.enemy.hp -= attackDamage;
-
                 if (this.scene.enemy.hp <= 0) {
                     this.scene.enemy.destroy();
                     if (this.hp < this.maxHp) {
@@ -121,7 +121,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                         this.scene.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
                     }
                 }
-
+                
                 this.scene.events.emit('updateHealthBar');
             }
         }
