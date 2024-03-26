@@ -155,13 +155,7 @@ class GameScene extends Phaser.Scene {
         ];
         this.updateRollChargeCircles();
         this.map = map;
-        this.events.on('updateHealthBar', () => {
-            this.enemies.forEach(enemy => {
-                if (enemy && enemy.updateHealthBar) {
-                    enemy.updateHealthBar();
-                }
-            });
-        });
+
 
         this.cursor = this.input.keyboard.createCursorKeys();
         this.zKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -228,6 +222,13 @@ class GameScene extends Phaser.Scene {
         }
         this.player.updateHitboxPosition();
 
+        this.events.on('updateHealthBar', () => {
+            this.enemies.forEach(enemy => {
+                if (enemy && enemy.updateHealthBar) {
+                    enemy.updateHealthBar();
+                }
+            });
+        });
         this.enemies.forEach(enemy => {
             if (enemy && enemy.hpbar) {
                 enemy.hpbar(); 
@@ -274,7 +275,6 @@ class GameScene extends Phaser.Scene {
             { x: 800, y: 340, sprite: "goblinIdle" },
         ];
 
-        // Create enemies based on positions
         enemyPositions.forEach(pos => {
             const enemy = new Enemy(this, pos.x, pos.y, pos.sprite);
             this.enemies.push(enemy);
@@ -300,10 +300,7 @@ class GameScene extends Phaser.Scene {
     }
 
     enemyHit() {
-        if (this.isRolling) {
-            return;
-        }
-        if (this.invincibleTime > this.time.now) {
+        if (this.isRolling || this.invincibleTime > this.time.now || this.player.hp <= 0) {
             return;
         }
 

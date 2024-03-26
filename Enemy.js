@@ -44,31 +44,24 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         });
 
         this.goblinHit = false;
+        this.updateHealthBar();
     }
 
     updateHealthBar() {
-        const barWidth = 130;
+        const barWidth = 50;
         const barHeight = 5;
         const redBarColor = 0xff0000;
-        const greenBarColor = 0x00ff00;
     
         this.hpBar.clear();
-        this.hpBarGreen.clear();
     
-        const redBarWidthValue = Math.max(0, barWidth * (this.hp / 30));
+        const hpbar = Math.max(0, barWidth * (this.hp / 30));
         this.hpBar.fillStyle(redBarColor);
-        this.hpBar.fillRect(0, 0, redBarWidthValue, barHeight);
+        this.hpBar.fillRect(0, 0, hpbar, barHeight);
         this.hpBar.setDepth(1);
-
-        const greenBarWidthValue = Math.max(0, barWidth * (this.hp / 30));
-        this.hpBarGreen.fillStyle(greenBarColor);
-        this.hpBarGreen.fillRect(0, 0, greenBarWidthValue, barHeight);
-        this.hpBarGreen.setDepth(2); 
     }
     
     hpbar() {
-        this.hpBar.setPosition(this.x - this.displayWidth + 20, this.y + this.displayHeight / 12 - 40).setDepth(9000);
-        this.hpBarGreen.setPosition(this.x - this.displayWidth - 20, this.y + this.displayHeight / 12 - 40).setDepth(9001);
+        this.hpBar.setPosition(this.x - this.displayWidth + 5, this.y + this.displayHeight / 12 - 40).setDepth(9000);
     }
     
     update() {
