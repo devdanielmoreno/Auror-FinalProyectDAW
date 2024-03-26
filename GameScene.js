@@ -272,7 +272,7 @@ class GameScene extends Phaser.Scene {
         const enemyPositions = [
             { x: 500, y: 340, sprite: "goblinIdle" },
             { x: 700, y: 340, sprite: "goblinIdle" },
-            { x: 800, y: 340, sprite: "goblinIdle" },
+            { x: 1800, y: 340, sprite: "goblinIdle" },
         ];
 
         enemyPositions.forEach(pos => {

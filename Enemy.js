@@ -102,7 +102,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 this.x,
                 this.y
             );
-            if (distance <= 400) {
+            if (distance <= 300) {
                 if (distance <= 20) {
                     this.setVelocity(0);
                     this.anims.play('goblinAttack', true);
