@@ -15,6 +15,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.allowGravity = false;
         this.setCollideWorldBounds(true);
 
+        this.hitbox = scene.add.rectangle(this.x, this.y, 50, 20);
+        scene.physics.add.existing(this.hitbox);
+        this.hitbox.body.allowGravity = false;
+        this.hitbox.setVisible(false);
+
+
         this.hp = 100;
         this.maxHp = 100;
 
@@ -73,45 +79,48 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             frames: this.anims.generateFrameNames('player_death', { prefix: 'death', end: 6, zeroPad: 5 }),
             frameRate: 10
         });
-        
+
     }
 
+    updateHitboxPosition() {
+        const direction = this.flipX ? -1 : 1;
+        const offset = 35;
+    
+        const hitboxX = this.x + offset * direction;
+        const hitboxY = this.y;
+        this.hitbox.setPosition(hitboxX, hitboxY);
+    }
+    
+
     attack() {
-        if (this.scene.isAttacking || this.scene.isRolling || !this.scene.enemy || this.hp <= 0) {
+        if (this.scene.isAttacking || this.scene.isRolling || !this.hp > 0) {
             return;
         }
-
+    
         this.attackCount = (this.attackCount || 0) + 1;
         this.scene.time.delayedCall(1500, () => {
             this.attackCount = 0;
         });
-
+    
         const attackAnim = `player_attack${Math.min(this.attackCount, 3)}`;
         const attackDamage = {
             'player_attack1': 10,
             'player_attack2': 20,
             'player_attack3': 30,
         }[attackAnim];
-
+    
         this.scene.isAttacking = true;
         this.anims.play(attackAnim, true);
         this.setDepth();
         this.scene.sound.play('playerAttack', { volume: 0.2 });
         this.setVelocity(0);
-
+    
         this.once('animationcomplete', () => {
             this.scene.isAttacking = false;
         });
-
-        if (this.scene.enemy && this.scene.enemy.hp > 0) {
-            const distance = Phaser.Math.Distance.Between(
-                this.x,
-                this.y,
-                this.scene.enemy.x,
-                this.scene.enemy.y
-            );
-
-            if (distance <= 130) {
+    
+        this.scene.physics.world.overlap(this.hitbox, this.scene.enemy, () => {
+            if (this.scene.enemy.hp > 0) {
                 this.scene.enemy.hp -= attackDamage;
                 this.scene.enemy.handleHit();
                 if (this.scene.enemy.hp <= 0) {
@@ -126,13 +135,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                         this.scene.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
                     }
                 }
-                
+    
                 this.scene.events.emit('updateHealthBar');
             }
-        }
-
+        });
+    
         this.lastAttackTime = this.scene.time.now;
     }
+    
+
 
     roll() {
         if (this.scene.rollCharges > 0 && this.scene.time.now > this.scene.lastRollTime + this.scene.rollCooldown) {

@@ -106,9 +106,11 @@ class GameScene extends Phaser.Scene {
         obstaLayer.setCollisionBetween(65, 189)
         this.physics.add.collider(this.player, wallLayer)
         wallLayer.setCollisionBetween(338, 437)
+        wallLayer.setDepth(1000);
         stairLayer.setDepth(1000);
         this.physics.add.collider(this.player, cosasLayer)
         cosasLayer.setCollisionBetween(911, 1141)
+        cosasLayer.setDepth(1001);
 
         this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -218,7 +220,7 @@ class GameScene extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.zKey)) {
             this.player.attack();
         }
-
+        this.player.updateHitboxPosition();
         this.enemy.hpbar();
 
         if (this.player.x > this.enemy.x) {

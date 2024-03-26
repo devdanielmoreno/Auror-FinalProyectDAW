@@ -15,6 +15,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.hp = 30;
 
         this.hpBar = scene.add.graphics();
+        this.hpBarGreen = this.scene.add.graphics();
 
         this.anims.create({
             key: 'goblinIdle',
@@ -48,23 +49,32 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     updateHealthBar() {
         const barWidth = 130;
         const barHeight = 5;
-        const barColor = 0xff0000;
-
+        const redBarColor = 0xff0000;
+        const greenBarColor = 0x00ff00;
+    
         this.hpBar.clear();
-
-        const barWidthValue = Math.max(0, barWidth * (this.hp / 30));
-        this.hpBar.fillStyle(barColor);
-        this.hpBar.fillRect(0, 0, barWidthValue, barHeight);
+        this.hpBarGreen.clear();
+    
+        const redBarWidthValue = Math.max(0, barWidth * (this.hp / 30));
+        this.hpBar.fillStyle(redBarColor);
+        this.hpBar.fillRect(0, 0, redBarWidthValue, barHeight);
         this.hpBar.setDepth(1);
 
+        const greenBarWidthValue = Math.max(0, barWidth * (this.hp / 30));
+        this.hpBarGreen.fillStyle(greenBarColor);
+        this.hpBarGreen.fillRect(0, 0, greenBarWidthValue, barHeight);
+        this.hpBarGreen.setDepth(2); 
     }
-
+    
+    hpbar() {
+        this.hpBar.setPosition(this.x - this.displayWidth + 20, this.y + this.displayHeight / 12 - 40).setDepth(9000);
+        this.hpBarGreen.setPosition(this.x - this.displayWidth - 20, this.y + this.displayHeight / 12 - 40).setDepth(9001);
+    }
+    
     update() {
         this.updateHealthBar();
     }
-    hpbar() {
-        this.hpBar.setPosition(this.x - this.displayWidth - 10, this.y + this.displayHeight / 12 - 40).setDepth(9000);
-    }
+    
     handleHit() {
         this.anims.stop();
         this.anims.play('goblinHit', true);
