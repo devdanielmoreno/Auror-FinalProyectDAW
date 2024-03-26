@@ -118,31 +118,30 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.once('animationcomplete', () => {
             this.scene.isAttacking = false;
         });
-    
-        this.scene.physics.world.overlap(this.hitbox, this.scene.enemy, () => {
-            if (this.scene.enemy.hp > 0) {
-                this.scene.enemy.hp -= attackDamage;
-                this.scene.enemy.handleHit();
-                if (this.scene.enemy.hp <= 0) {
-                    this.scene.time.delayedCall(500, () => {
-                        this.scene.enemy.destroy();
-                    });
-                    if (this.hp < this.maxHp) {
-                        this.hp = Math.min(this.maxHp, this.hp + 5);
-                        this.scene.healthText.setText(`${this.hp}/100`);
-                        const baraWidth = Math.max(0, this.hp / this.maxHp * sizes.width / 10);
-                        const baraColor = this.hp <= 20 ? 0xff0000 : (this.hp <= 50 ? 0xffff00 : 0x00ff00);
-                        this.scene.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
+        this.scene.enemies.forEach(enemy => {
+            this.scene.physics.world.overlap(this.hitbox, enemy, () => {
+                if (enemy.hp > 0) {
+                    enemy.hp -= attackDamage;
+                    enemy.handleHit();
+                    if (enemy.hp <= 0) {
+                        this.scene.time.delayedCall(500, () => {
+                            enemy.destroy();
+                        });
+                        if (this.hp < this.maxHp) {
+                            this.hp = Math.min(this.maxHp, this.hp + 5);
+                            this.scene.healthText.setText(`${this.hp}/100`);
+                            const baraWidth = Math.max(0, this.hp / this.maxHp * sizes.width / 10);
+                            const baraColor = this.hp <= 20 ? 0xff0000 : (this.hp <= 50 ? 0xffff00 : 0x00ff00);
+                            this.scene.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
+                        }
                     }
+                    this.scene.events.emit('updateHealthBar');
                 }
-    
-                this.scene.events.emit('updateHealthBar');
-            }
+            });
         });
     
         this.lastAttackTime = this.scene.time.now;
     }
-    
 
 
     roll() {

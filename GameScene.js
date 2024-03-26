@@ -15,7 +15,7 @@ class GameScene extends Phaser.Scene {
         this.player;
         this.cursor;
         this.playerSpeed = speedDown + 300;
-        this.enemy;
+        this.enemies = [];
         this.healthBar;
         this.rollCooldown = 1000;
         this.rollCharges = 3;
@@ -50,11 +50,11 @@ class GameScene extends Phaser.Scene {
 
 
         /////Enemigos/////
-        this.load.atlas("goblinIdle", "assets/enemigos/goblin/goblinIdle.png","assets/enemigos/goblin/goblin.json");
-        this.load.atlas("goblinRun", "assets/enemigos/goblin/goblinRun.png","assets/enemigos/goblin/goblinRun.json");
-        this.load.atlas("goblinAttack", "assets/enemigos/goblin/goblinAttack.png","assets/enemigos/goblin/goblinAttack.json");
-        this.load.atlas("goblinHit", "assets/enemigos/goblin/goblinHIt.png","assets/enemigos/goblin/goblinHit.json");
-        this.load.atlas("goblinDeath", "assets/enemigos/goblin/goblinDeath.png","assets/enemigos/goblin/goblinDeath.json");
+        this.load.atlas("goblinIdle", "assets/enemigos/goblin/goblinIdle.png", "assets/enemigos/goblin/goblin.json");
+        this.load.atlas("goblinRun", "assets/enemigos/goblin/goblinRun.png", "assets/enemigos/goblin/goblinRun.json");
+        this.load.atlas("goblinAttack", "assets/enemigos/goblin/goblinAttack.png", "assets/enemigos/goblin/goblinAttack.json");
+        this.load.atlas("goblinHit", "assets/enemigos/goblin/goblinHIt.png", "assets/enemigos/goblin/goblinHit.json");
+        this.load.atlas("goblinDeath", "assets/enemigos/goblin/goblinDeath.png", "assets/enemigos/goblin/goblinDeath.json");
 
         /////HUD/////
         this.load.image("barra", "assets/HUD/barra.png");
@@ -99,10 +99,12 @@ class GameScene extends Phaser.Scene {
         const runasLayer = map.createLayer('runas', tilecosas);
 
         this.player = new Player(this, 50, 340, "player");
-        this.enemy = new Enemy(this, 500,340, "goblinIdle");
         this.player.scene = this;
+
+        this.createEnemies();
+
         this.physics.add.collider(this.player, obstaLayer)
-        this.physics.add.collider(this.enemy, obstaLayer)
+        this.physics.add.collider(this.enemies, obstaLayer)
         obstaLayer.setCollisionBetween(65, 189)
         this.physics.add.collider(this.player, wallLayer)
         wallLayer.setCollisionBetween(338, 437)
@@ -120,7 +122,7 @@ class GameScene extends Phaser.Scene {
         this.lastAttackTime = 0;
         this.invincibleTime = 0;
 
-        this.physics.add.collider(this.player, this.enemy, this.enemyHit, null, this);
+        this.setupCollisions();
 
         this.healthText = this.add.text(14, 13, `${this.player.hp}/100`, { fontFamily: "Orbitron", fontSize: '32px', fill: '#00ff00', stroke: 'black', strokeThickness: 3 });
         this.healthBar = this.add.graphics({ x: 15, y: this.healthText.y + this.healthText.height + 5 });
@@ -144,7 +146,7 @@ class GameScene extends Phaser.Scene {
             this.bgMusica.stop();
             this.scene.run('scene-dead');
         });
-        
+
         this.rollbars = [
             this.add.image(87, 110, "rollbar1").setDepth(9001).setScrollFactor(0).setVisible(false),
             this.add.image(87, 110, "rollbar2").setDepth(9001).setScrollFactor(0).setVisible(false),
@@ -154,7 +156,11 @@ class GameScene extends Phaser.Scene {
         this.updateRollChargeCircles();
         this.map = map;
         this.events.on('updateHealthBar', () => {
-            this.enemy.updateHealthBar();
+            this.enemies.forEach(enemy => {
+                if (enemy && enemy.updateHealthBar) {
+                    enemy.updateHealthBar();
+                }
+            });
         });
 
         this.cursor = this.input.keyboard.createCursorKeys();
@@ -221,17 +227,22 @@ class GameScene extends Phaser.Scene {
             this.player.attack();
         }
         this.player.updateHitboxPosition();
-        this.enemy.hpbar();
 
-        if (this.player.x > this.enemy.x) {
-            this.enemy.flipX = false;
-        } else {
-            this.enemy.flipX = true; 
-        }
-        if (this.player && this.enemy && this.enemy.body) {
-            this.enemy.updateMovement();
-        }
-        
+        this.enemies.forEach(enemy => {
+            if (enemy && enemy.hpbar) {
+                enemy.hpbar(); 
+            }
+
+            if (this.player.x > enemy.x) {
+                enemy.flipX = false;
+            } else {
+                enemy.flipX = true;
+            }
+            if (this.player && enemy && enemy.body) {
+                enemy.updateMovement();
+            }
+        });
+
         const distance = Phaser.Math.Distance.Between(
             this.player.x,
             this.player.y,
@@ -253,6 +264,26 @@ class GameScene extends Phaser.Scene {
                 this.cartelVisible = true;
                 this.mostrarDialogo();
             }
+        });
+    }
+    createEnemies() {
+
+        const enemyPositions = [
+            { x: 500, y: 340, sprite: "goblinIdle" },
+            { x: 700, y: 340, sprite: "goblinIdle" },
+            { x: 800, y: 340, sprite: "goblinIdle" },
+        ];
+
+        // Create enemies based on positions
+        enemyPositions.forEach(pos => {
+            const enemy = new Enemy(this, pos.x, pos.y, pos.sprite);
+            this.enemies.push(enemy);
+        });
+    }
+
+    setupCollisions() {
+        this.enemies.forEach(enemy => {
+            this.physics.add.collider(enemy, this.player, this.enemyHit, null, this);
         });
     }
     mostrarDialogo() {
