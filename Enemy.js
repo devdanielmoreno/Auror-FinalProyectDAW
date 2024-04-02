@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
-
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, type) {
+    constructor(scene, x, y, texture, type,damage) {
         super(scene, x, y, texture);
 
         scene.add.existing(this);
@@ -12,10 +11,17 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setImmovable(true);
         this.body.allowGravity = false;
         this.setCollideWorldBounds(true);
+        
+        this.enemyType = type;
+        this.damage = damage;
 
-        this.hp = 30;
-
-
+        if (type === 'goblin') {
+            this.hp = 30;
+            this.damage = 30;
+        } else if (type === 'seta') {
+            this.hp = 100;
+            this.damage = 5;
+        }
         this.hpBar = scene.add.graphics();
 
         this.enemyHit = false;

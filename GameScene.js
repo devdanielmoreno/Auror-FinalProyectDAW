@@ -237,7 +237,7 @@ class GameScene extends Phaser.Scene {
         });
         this.enemies.forEach(enemy => {
             if (enemy && enemy.hpbar) {
-                enemy.hpbar(); 
+                enemy.hpbar();
             }
 
             if (this.player.x > enemy.x) {
@@ -276,14 +276,14 @@ class GameScene extends Phaser.Scene {
     createEnemies() {
         const enemyData = [
             { x: 500, y: 340, sprite: "goblinIdle", type: "goblin" },
-            { x: 700, y: 340, sprite: "setaIdle", type: "seta" },
-            { x: 1800, y: 340, sprite: "goblinIdle", type: "goblin" },
+            { x: 700, y: 340, sprite: "setaIdle", type: "seta"},
+            { x: 1800, y: 340, sprite: "goblinIdle", type: "goblin"},
         ];
     
         enemyData.forEach(data => {
             const { x, y, sprite, type } = data;
-            const enemy = new Enemy(this, x, y, sprite);
-            enemy.enemyType = type; 
+            const enemy = new Enemy(this, x, y, sprite, type);
+            enemy.enemyType = type;
             if (type === "goblin") {
                 enemy.setAnimations('goblin');
             } else if (type === "seta") {
@@ -297,7 +297,9 @@ class GameScene extends Phaser.Scene {
 
     setupCollisions() {
         this.enemies.forEach(enemy => {
-            this.physics.add.collider(enemy, this.player, this.enemyHit, null, this);
+            this.physics.add.collider(enemy, this.player, () => {
+                this.enemyHit(enemy);
+            });
         });
     }
     mostrarDialogo() {
@@ -313,24 +315,26 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    enemyHit() {
+    enemyHit(enemy) {
         if (this.isRolling || this.invincibleTime > this.time.now || this.player.hp <= 0) {
             return;
         }
-
+    
         if (this.time.now > this.lastAttackTime + 1500) {
             this.lastAttackTime = this.time.now;
-            this.player.hp = Math.max(0, this.player.hp - 5);
-
+            this.player.hp = Math.max(0, this.player.hp - enemy.damage);
+    
             this.invincibleTime = this.time.now + 2000;
-
+    
             this.healthText.setText(`${this.player.hp}/100`);
             const baraWidth = Math.max(0, this.player.hp / this.player.maxHp * sizes.width / 10);
             const baraColor = this.player.hp <= 20 ? 0xff0000 : (this.player.hp <= 50 ? 0xffff00 : 0x00ff00);
             this.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
-
+    
             this.sound.play("enemyAttack", { volume: 0.2 });
         }
     }
+    
+    
 }
 export default GameScene;
