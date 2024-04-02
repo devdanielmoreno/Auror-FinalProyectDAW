@@ -56,6 +56,12 @@ class GameScene extends Phaser.Scene {
         this.load.atlas("goblinHit", "assets/enemigos/goblin/goblinHIt.png", "assets/enemigos/goblin/goblinHit.json");
         this.load.atlas("goblinDeath", "assets/enemigos/goblin/goblinDeath.png", "assets/enemigos/goblin/goblinDeath.json");
 
+        this.load.atlas("setaIdle", "assets/enemigos/seta/setaIdle.png", "assets/enemigos/seta/seta.json");
+        this.load.atlas("setaRun", "assets/enemigos/seta/setaRun.png", "assets/enemigos/seta/setaRun.json");
+        this.load.atlas("setaAttack", "assets/enemigos/seta/setaAttack.png", "assets/enemigos/seta/setaAttack.json");
+        this.load.atlas("setaHit", "assets/enemigos/seta/setaHit.png", "assets/enemigos/seta/setaHit.json");
+        this.load.atlas("setaDeath", "assets/enemigos/seta/setaDeath.png", "assets/enemigos/seta/setaDeath.json");
+
         /////HUD/////
         this.load.image("barra", "assets/HUD/barra.png");
         this.load.image("dialog", "assets/HUD/dialog.png");
@@ -268,18 +274,26 @@ class GameScene extends Phaser.Scene {
         });
     }
     createEnemies() {
-
-        const enemyPositions = [
-            { x: 500, y: 340, sprite: "goblinIdle" },
-            { x: 700, y: 340, sprite: "goblinIdle" },
-            { x: 1800, y: 340, sprite: "goblinIdle" },
+        const enemyData = [
+            { x: 500, y: 340, sprite: "goblinIdle", type: "goblin" },
+            { x: 700, y: 340, sprite: "setaIdle", type: "seta" },
+            { x: 1800, y: 340, sprite: "goblinIdle", type: "goblin" },
         ];
-
-        enemyPositions.forEach(pos => {
-            const enemy = new Enemy(this, pos.x, pos.y, pos.sprite);
+    
+        enemyData.forEach(data => {
+            const { x, y, sprite, type } = data;
+            const enemy = new Enemy(this, x, y, sprite);
+            enemy.enemyType = type; 
+            if (type === "goblin") {
+                enemy.setAnimations('goblin');
+            } else if (type === "seta") {
+                enemy.setAnimations('seta');
+            }
+    
             this.enemies.push(enemy);
         });
     }
+    
 
     setupCollisions() {
         this.enemies.forEach(enemy => {
