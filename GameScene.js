@@ -349,7 +349,12 @@ class GameScene extends Phaser.Scene {
         }
     }
     finalA() {
-        this.scene.start('scene-end'); 
+        this.cameras.main.fadeOut(1000, 0, 0, 0);
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+            this.bgMusica.stop();
+            this.player.disableBody(true, true);
+            this.scene.start('scene-end');
+        });
     }
     
     
