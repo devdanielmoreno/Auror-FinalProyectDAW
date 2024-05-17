@@ -4,6 +4,7 @@ import MenuScene from "./MenuScene.js";
 import OpcionesScene from "./OpcionesScene.js";
 import DeadScene from "./DeadScene.js";
 import GameScene from "./GameScene.js";
+import EndScene from './EndScene.js';
 
 const sizes = {
   width: 1500,
@@ -23,7 +24,7 @@ const config = {
       debug: false
     }
   },
-  scene: [MenuScene, GameScene, DeadScene, OpcionesScene]
+  scene: [MenuScene, GameScene, DeadScene, OpcionesScene,EndScene]
 };
 
 const game = new Phaser.Game(config);
