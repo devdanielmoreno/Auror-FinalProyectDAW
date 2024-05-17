@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
+
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, type,damage) {
+    constructor(scene, x, y, texture, type, damage) {
         super(scene, x, y, texture);
 
         scene.add.existing(this);
@@ -11,22 +12,27 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setImmovable(true);
         this.body.allowGravity = false;
         this.setCollideWorldBounds(true);
-        
+
         this.enemyType = type;
         this.damage = damage;
 
         if (type === 'goblin') {
             this.hp = 30;
+            this.maxHp = 30;
             this.damage = 30;
         } else if (type === 'seta') {
             this.hp = 100;
+            this.maxHp = 100;
             this.damage = 5;
         }
+
         this.hpBar = scene.add.graphics();
+        this.updateHealthBar();
 
         this.enemyHit = false;
-        this.updateHealthBar();
+        this.deathHandled = false;
     }
+
     setAnimations(type) {
         if (type === 'goblin') {
             this.anims.create({
@@ -85,31 +91,20 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     updateHealthBar() {
-        const barWidth = 100; 
+        const barWidth = 80;
         const barHeight = 5;
         const redBarColor = 0xff0000;
-    
+
         this.hpBar.clear();
-    
         this.hpBar.fillStyle(redBarColor);
-        this.hpBar.fillRect(0, 0, Math.max(0, barWidth * (this.hp / 100)), barHeight);
-    
+        this.hpBar.fillRect(this.x - barWidth / 2, this.y - this.displayHeight / 2 - barHeight - 10, Math.max(0, barWidth * (this.hp / this.maxHp)),barHeight);
         this.hpBar.setDepth(1);
     }
-    
-
-    hpbar() {
-        const barWidth = 100;
-    
-        this.hpBar.setPosition(this.x - barWidth / 2, this.y + this.displayHeight / 12 - 40).setDepth(9000);
-    }
-    
-
 
     update() {
         this.updateHealthBar();
+        this.updateMovement();
     }
-
     handleHit() {
         this.anims.stop();
         this.anims.play(`${this.enemyType}Hit`, true);
@@ -146,6 +141,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 this.x,
                 this.y
             );
+            
             if (distance <= 300) {
                 if (distance <= 20) {
                     this.setVelocity(0);
@@ -158,6 +154,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play(`${this.enemyType}Idle`, true);
                 this.setVelocity(0);
             }
+            this.updateHealthBar();
         }
     }
 }
