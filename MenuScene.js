@@ -27,11 +27,9 @@ class MenuScene extends Phaser.Scene {
         const backgroundImage = this.add.image(0, 0, "background")
             .setOrigin(0, 0)
         backgroundImage.setDisplaySize(sizes.width, sizes.height);
-        const titleText = this.add.text(sizes.width / 2, sizes.height / 4 - 60, "Auror", { fontSize: '64px', fontWeight: 'bold', fill: 'white' }).setDepth(100);
+        const titleText = this.add.text(sizes.width / 2, sizes.height / 4 - 60, "Auror", { fontSize: '100px', fontWeight: 'bold', fill: 'white' }).setDepth(100);
         titleText.setOrigin(0.5, 0.5);
 
-        const subtitleText = this.add.text(sizes.width / 2, sizes.height / 4 + titleText.height - 50, "Las Piedras de la Esperanza", { fontSize: '32px', fill: 'white' }).setDepth(100);
-        subtitleText.setOrigin(0.5, 0.5);
 
         const startButton = this.add.image(sizes.width / 2, sizes.height / 2 + 50, "startButton");
         startButton.setInteractive();

@@ -36,7 +36,8 @@ class GameScene extends Phaser.Scene {
         this.load.image('stone', 'assets/Mapa/TX Tileset Stone Ground.png')
         this.load.image('wall', 'assets/Mapa/TX Tileset Wall.png')
         this.load.image('cosas', 'assets/Mapa/TX Props.png')
-        this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/MapaP2.json')
+        this.load.image('final','assets/Mapa/TX Props.png')
+        this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/Mapa.json')
 
         /////Player//////
         this.load.atlas("player", "assets/jugador/player.png", "assets/jugador/playerSprites.json");
@@ -95,6 +96,7 @@ class GameScene extends Phaser.Scene {
         const tilecosas = map.addTilesetImage('TX Props', 'cosas');
         const tilerunas = map.addTilesetImage('TX Props', 'cosas');
         const tilecarteles = map.addTilesetImage('TX Props', 'cosas');
+        const tilefinal = map.addTilesetImage('TX Props', 'final');
         const groundLayer = map.createLayer('ground', tileset);
         const stoneLayer = map.createLayer('piedra', tilepiedra);
         const obstaLayer = map.createLayer('obstacles', tile);
@@ -103,6 +105,7 @@ class GameScene extends Phaser.Scene {
         const cosasLayer = map.createLayer('cosas', tilecosas);
         const cartelesLayer = map.createLayer('carteles', tilerunas);
         const runasLayer = map.createLayer('runas', tilecosas);
+        const finalLayer = map.createLayer('final', tilefinal);
 
         this.player = new Player(this, 50, 340, "player");
         this.player.scene = this;
@@ -119,6 +122,8 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, cosasLayer)
         cosasLayer.setCollisionBetween(911, 1141)
         cosasLayer.setDepth(1001);
+        finalLayer.setCollisionByExclusion([-1]);
+        this.physics.add.collider(this.player, finalLayer, this.finalA, null, this);
 
         this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -275,9 +280,18 @@ class GameScene extends Phaser.Scene {
     }
     createEnemies() {
         const enemyData = [
-            { x: 500, y: 340, sprite: "goblinIdle", type: "goblin" },
-            { x: 700, y: 340, sprite: "setaIdle", type: "seta"},
-            { x: 1800, y: 340, sprite: "goblinIdle", type: "goblin"},
+            { x: 500, y: 540, sprite: "goblinIdle", type: "goblin" },
+            { x: 900, y: 200, sprite: "setaIdle", type: "seta"},
+            { x: 1800, y: 840, sprite: "goblinIdle", type: "goblin"},
+            { x: 1700, y: 340, sprite: "setaIdle", type: "seta"},
+            { x: 1100, y: 600, sprite: "goblinIdle", type: "goblin"},
+            { x: 1400, y: 700, sprite: "setaIdle", type: "seta"},
+            { x: 700, y: 1900, sprite: "goblinIdle", type: "goblin"},
+            { x: 750, y: 1800, sprite: "goblinIdle", type: "goblin"},
+            { x: 830, y: 1800, sprite: "goblinIdle", type: "goblin"},
+            { x: 1600, y: 1600, sprite: "setaIdle", type: "seta"},
+            { x: 1900, y: 1700, sprite: "setaIdle", type: "seta"},
+            { x: 2000, y: 1800, sprite: "goblinIdle", type: "goblin"},
         ];
     
         enemyData.forEach(data => {
@@ -333,6 +347,9 @@ class GameScene extends Phaser.Scene {
     
             this.sound.play("enemyAttack", { volume: 0.2 });
         }
+    }
+    finalA() {
+        this.scene.start('scene-end'); 
     }
     
     
