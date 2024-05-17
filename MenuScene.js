@@ -27,7 +27,20 @@ class MenuScene extends Phaser.Scene {
         const backgroundImage = this.add.image(0, 0, "background")
             .setOrigin(0, 0)
         backgroundImage.setDisplaySize(sizes.width, sizes.height);
-        const titleText = this.add.text(sizes.width / 2, sizes.height / 4 - 60, "Auror", { fontSize: '100px', fontWeight: 'bold', fill: 'white' }).setDepth(100);
+        const titleText = this.add.text(
+            sizes.width / 2, 
+            sizes.height / 4 - 60, 
+            "Auror", 
+            {
+                fontSize: '200px',
+                fontWeight: 'bold',
+                fill: 'brown',
+                fontFamily: "Jaini Purva",
+                stroke: '#000000',
+                strokeThickness: 10 
+            }
+        ).setDepth(100).setOrigin(0.5); 
+        
         titleText.setOrigin(0.5, 0.5);
 
 

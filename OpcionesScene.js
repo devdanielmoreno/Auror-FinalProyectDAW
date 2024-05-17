@@ -21,10 +21,10 @@ class OpcionesScene extends Phaser.Scene {
             .rectangle(0, 0, sizes.width, sizes.height, 0x000000, 0.5)
             .setOrigin(0);
             this.add
-            .text(sizes.width - 100 , 170, "Música", { fontSize: "32px", fill: "white" })
+            .text(sizes.width - 100 , 170, "Musica", { fontSize: "32px", fill: "white",fontFamily: "Orbitron", })
             .setOrigin(0.5);
 
-        this.add.text(sizes.width / 2, 150, "Juego en Pausa", { fontSize: "50px", fill: "white" }).setOrigin(0.5);
+        this.add.text(sizes.width / 2, 150, "Juego en Pausa", { fontSize: "50px", fill: "white",fontFamily: "Orbitron", }).setOrigin(0.5);
 
         const volumeBar = this.add.rectangle(
             sizes.width - 100,
