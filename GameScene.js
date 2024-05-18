@@ -26,6 +26,7 @@ class GameScene extends Phaser.Scene {
         this.emitter;
         this.cartel;
         this.cartelVisible = true;
+        this.potionUsages = 2;
     }
 
     preload() {
@@ -48,6 +49,7 @@ class GameScene extends Phaser.Scene {
         this.load.atlas("player_death", "assets/jugador/death.png", "assets/jugador/death.json");
         this.load.atlas("arriba", "assets/jugador/arriba.png", "assets/jugador/arriba.json");
         this.load.atlas("abajo", "assets/jugador/abajo.png", "assets/jugador/abajo.json");
+        this.load.image("potion", "assets/pocion.png");
 
 
         /////Enemigos/////
@@ -76,6 +78,7 @@ class GameScene extends Phaser.Scene {
         this.load.audio("enemyAttack", "assets/Musica/enemyAttack.mp3");
         this.load.audio("playerAttack", "assets/Musica/playerAttack.mp3");
         this.load.audio("playerRoll", "assets/Musica/playerRoll.mp3");
+        this.load.audio("healSound", "assets/Musica/healsound.wav");
     }
 
     create() {
@@ -158,6 +161,21 @@ class GameScene extends Phaser.Scene {
             this.scene.run('scene-dead');
         });
 
+        this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9001).setScale(1.5); 
+    
+        this.potionText = this.add.text(sizes.width + 100, sizes.height + 100, `Usos: ${this.potionUsages}`, { fontFamily: "Orbitron", fontSize: "24px", fill: "#ffffff"}).setScrollFactor(0).setDepth(9001);
+    
+        this.input.keyboard.on('keydown-SPACE', () => {
+            this.usePotion();
+        });
+        const potionBackground = this.add.circle(sizes.width - 70, sizes.height - 60, 50, 0x000000, 0.5)
+        .setStrokeStyle(10, 0x000000) 
+        .setScrollFactor(0)
+        .setDepth(9000);
+    
+
+
+        
         this.rollbars = [
             this.add.image(87, 110, "rollbar1").setDepth(9001).setScrollFactor(0).setVisible(false),
             this.add.image(87, 110, "rollbar2").setDepth(9001).setScrollFactor(0).setVisible(false),
@@ -240,6 +258,10 @@ class GameScene extends Phaser.Scene {
                 }
             });
         });
+
+        this.potionImage.setPosition(this.cameras.main.width - 72, this.cameras.main.height - 75);
+        this.potionText.setPosition(this.cameras.main.width - 120, this.cameras.main.height - 55);
+    
         this.enemies.forEach(enemy => {
             if (enemy && enemy.hpbar) {
                 enemy.hpbar();
@@ -348,6 +370,16 @@ class GameScene extends Phaser.Scene {
             this.sound.play("enemyAttack", { volume: 0.2 });
         }
     }
+    usePotion() {
+        if (this.potionUsages > 0) { 
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp);
+            this.potionUsages--; 
+            this.potionText.setText(`Usos: ${this.potionUsages}`);
+            this.player.usePotion();
+            this.updateHealthBar();
+        }
+    }
+    
     finalA() {
         this.cameras.main.fadeOut(1000, 0, 0, 0);
         this.cameras.main.once('camerafadeoutcomplete', () => {

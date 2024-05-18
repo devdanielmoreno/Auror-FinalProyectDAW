@@ -90,6 +90,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         const hitboxY = this.y;
         this.hitbox.setPosition(hitboxX, hitboxY);
     }
+    usePotion() {
+        if (this.scene && this.scene.player) {
+            const player = this.scene.player;
+            const heal = 50;
+            const maxHp = player.maxHp;
+            
+            player.hp = Math.min(player.hp + heal, maxHp);
+            
+            player.scene.healthText.setText(`${player.hp}/${maxHp}`);
+            const baraWidth = Math.max(0, player.hp / maxHp * sizes.width / 10);
+            const baraColor = player.hp <= 20 ? 0xff0000 : (player.hp <= 50 ? 0xffff00 : 0x00ff00);
+            player.scene.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
+            
+            this.scene.sound.play("healSound", { volume: 0.5 });
+
+        }
+    }
     
 
     attack() {
