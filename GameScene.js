@@ -83,6 +83,7 @@ class GameScene extends Phaser.Scene {
         this.load.image("rollbar3", "assets/HUD/roll3.png");
         this.load.image("rollbar4", "assets/HUD/roll4.png");
         this.load.image("potion", "assets/HUD/pocion.png");
+        this.load.image('arrow', 'assets/HUD/arrow.png');
 
         /////Musica/////
         this.load.audio("bgMusica", "assets/Musica/musica.ogg");
@@ -226,6 +227,9 @@ class GameScene extends Phaser.Scene {
         this.cKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
+        this.arrow = this.add.image(2700, 480, 'arrow');
+        this.arrow.setVisible(false); 
+    
         
     }
 
@@ -352,7 +356,6 @@ class GameScene extends Phaser.Scene {
                 this.mostrarDialogo();
             }
         });
-
     }
     activateBoss(boss) {
         this.bossActive = true;
@@ -392,8 +395,18 @@ class GameScene extends Phaser.Scene {
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
     
             this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
+    
+            if (boss.hp <= 0) {
+                this.arrow.setVisible(true);
+                const finalTile = this.map.findTile(t => t.layer.name === 'final');
+                if (finalTile) {
+                    this.arrow.targetX = finalTile.pixelX;
+                    this.arrow.targetY = finalTile.pixelY;
+                }
+            }
         }
     }
+    
     
     createEnemies() {
         this.enemies = []; 
