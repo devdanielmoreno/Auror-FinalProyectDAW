@@ -175,8 +175,8 @@ class GameScene extends Phaser.Scene {
             this.scene.pause();
             this.bgMusica.stop();
             this.bossMusic.stop();
-            this.bossHealthBar.clear();
-            this.bossHealthText.setText("");
+            this.bossHealthBar.clear(); 
+            this.bossHealthText.setText(""); 
             this.scene.run('scene-dead');
         });
 
@@ -281,6 +281,7 @@ class GameScene extends Phaser.Scene {
                 }
             });
         });
+        
 
         this.potionImage.setPosition(this.cameras.main.width - 72, this.cameras.main.height - 75);
         this.potionText.setPosition(this.cameras.main.width - 120, this.cameras.main.height - 55);
@@ -337,15 +338,14 @@ class GameScene extends Phaser.Scene {
         this.bossActive = true;
         this.bgMusica.stop();
         this.bossMusic.play({ loop: true });
-
+    
         this.bossHealthBar.clear();
         this.bossHealthText.setStyle({
             fontFamily: 'Orbitron',
         });
-        this.bossHealthText.setText(`${boss.enemyType.toUpperCase()} VIDA: ${boss.hp}/${boss.maxHp}`);
-        this.updateBossHealthBar(boss);
+        this.updateBossHealthBar();
     }
-
+    
     updateBossHealthBar() {
         const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
         if (boss) {
@@ -357,14 +357,14 @@ class GameScene extends Phaser.Scene {
                 const barHeight = 20;
                 const healthPercentage = Math.max(0, boss.hp / boss.maxHp);
                 const healthWidth = barWidth * healthPercentage;
-
+    
                 this.bossHealthBar.fillStyle(0x000000);
                 this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, barWidth, barHeight);
-
+    
                 this.bossHealthBar.fillStyle(0xff0000);
                 this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
-
-                this.bossHealthText.setText(`Miquel: ${boss.hp}/${boss.maxHp}`);
+    
+                this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
             }
         }
     }
@@ -377,6 +377,7 @@ class GameScene extends Phaser.Scene {
         this.bgMusica.play({ loop: true });
         this.bossActive = false;
     }
+    
     createEnemies() {
         const enemyData = [
             { x: 500, y: 540, sprite: "goblinIdle", type: "goblin" },
@@ -404,6 +405,7 @@ class GameScene extends Phaser.Scene {
                 enemy.setAnimations('seta');
             }else if (type === "boss") {
                 enemy.setAnimations('boss');
+                enemy.setScale(3);
             }
     
             this.enemies.push(enemy);
@@ -411,6 +413,7 @@ class GameScene extends Phaser.Scene {
     }
     
 
+    
     setupCollisions() {
         this.enemies.forEach(enemy => {
             this.physics.add.collider(enemy, this.player, () => {

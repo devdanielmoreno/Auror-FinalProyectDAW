@@ -103,7 +103,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             const baraColor = player.hp <= 20 ? 0xff0000 : (player.hp <= 50 ? 0xffff00 : 0x00ff00);
             player.scene.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
             
-            this.scene.sound.play("healSound", { volume: 0.5 });
+            this.scene.sound.play("healSound", { volume: 0.3 });
 
         }
     }
@@ -129,7 +129,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.isAttacking = true;
         this.anims.play(attackAnim, true);
         this.setDepth();
-        this.scene.sound.play('playerAttack', { volume: 0.2 });
+        this.scene.sound.play('playerAttack', { volume: 0.1 });
         this.setVelocity(0);
     
         this.once('animationcomplete', () => {
@@ -167,7 +167,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.setAlpha(0.5);
             this.anims.stop();
             this.anims.play('roll_effect', true);
-            this.scene.sound.play('playerRoll', { volume: 0.2 });
+            this.scene.sound.play('playerRoll', { volume: 0.1 });
             this.setVelocity(0);
             this.scene.lastRollTime = this.scene.time.now;
             this.scene.invincibleTime = this.scene.time.now + 1000;

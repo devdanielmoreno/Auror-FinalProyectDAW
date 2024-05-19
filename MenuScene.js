@@ -26,6 +26,20 @@ class MenuScene extends Phaser.Scene {
         this.mInicio.loop = true;
         this.mInicio.setVolume(0.2);
 
+        const createdByText = this.add.text(
+            sizes.width - 30,
+            sizes.height - 130,
+            "Creado por: Daniel Moreno",
+            {
+                fontSize: '30px',
+                fill: 'white',
+                fontFamily: "Jaini Purva",
+                align: 'right',
+                stroke: '#000000',
+                strokeThickness: 5
+            }
+        ).setDepth(101).setOrigin(1, 1);
+
         const backgroundImage = this.add.image(0, 0, "background")
             .setOrigin(0, 0)
             .setDisplaySize(sizes.width, sizes.height);
@@ -52,11 +66,11 @@ class MenuScene extends Phaser.Scene {
         const startButton = this.add.image(sizes.width / 2, sizes.height / 2 + 50, "startButton");
         startButton.setInteractive();
         startButton.on('pointerdown', () => {
-            this.startTransition(titleText, startButton, backgroundImage2);
+            this.startTransition(titleText, startButton, backgroundImage2, createdByText);
         });
     }
 
-    startTransition(titleText, startButton, backgroundImage2) {
+    startTransition(titleText, startButton, backgroundImage2, createdByText) {
         this.tweens.add({
             targets: [titleText, startButton],
             alpha: 0,
@@ -64,20 +78,39 @@ class MenuScene extends Phaser.Scene {
             onComplete: () => {
                 titleText.destroy(); 
                 startButton.destroy(); 
+                createdByText.destroy(); 
+                
+                const explanationText = this.add.text(
+                    sizes.width / 2,
+                    sizes.height / 2 - 40,
+                    "¡Tu pueblo ha sido invadido!\n\nTu misión es liberarlo\nmatando al boss\ny llegando a la estatua de la diosa Auror",
+                    {
+                        fontSize: '100px', 
+                        fill: 'white',
+                        fontFamily: "Jaini Purva",
+                        align: 'center',
+                        stroke: '#000000',
+                        strokeThickness: 10
+                    }
+                ).setDepth(101).setOrigin(0.5);
+
                 this.tweens.add({
                     targets: backgroundImage2,
                     alpha: 1,
-                    duration: 3000,
+                    duration: 2000,
                     onComplete: () => {
-                        this.time.delayedCall(1000, () => {
-                            this.startGame();
+                        this.input.once('pointerdown', () => {
+                            explanationText.destroy();
+                            this.time.delayedCall(1000, () => {
+                                this.startGame();
+                            });
                         });
                     }
                 });
             }
         });
     }
-
+    
     startGame() {
         this.mInicio.stop();
         this.scene.start('scene-game');
