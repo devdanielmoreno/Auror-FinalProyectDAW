@@ -180,16 +180,17 @@ class GameScene extends Phaser.Scene {
         this.cartel = this.add.image(300, 180, "dialog").setVisible(false);
 
         this.events.on('playerDead', () => {
-            this.resetBossHealth(); 
+            this.resetBossHealth();
+            this.updateBossHealthBar(); 
             this.scene.pause();
             this.bgMusica.stop();
             this.bossMusic.stop();
-            this.bossHealthBar.clear(); 
-            this.bossHealthText.setText(""); 
             this.scene.run('scene-dead');
+            this.time.delayedCall(3000, () => {
+                this.scene.restart(); 
+            });
         });
         
-
         this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5); 
     
         this.potionText = this.add.text(sizes.width + 100, sizes.height + 100, `Usos: ${this.potionUsages}`, { fontFamily: "Orbitron", fontSize: "24px", fill: "#ffffff"}).setScrollFactor(0).setDepth(9009);
@@ -225,6 +226,7 @@ class GameScene extends Phaser.Scene {
         this.cKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
+        
     }
 
     update() {
@@ -288,6 +290,12 @@ class GameScene extends Phaser.Scene {
             this.enemies.forEach(enemy => {
                 if (enemy && enemy.updateHealthBar) {
                     enemy.updateHealthBar();
+                }
+                if (enemy.enemyType === 'boss' && !this.bossActive) {
+                    const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
+                    if (distance <= 500) { 
+                        this.activateBoss(enemy);
+                    }
                 }
             });
         });
@@ -362,30 +370,25 @@ class GameScene extends Phaser.Scene {
         }
     }
     
-    
     updateBossHealthBar() {
         const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
         if (boss) {
-            if (boss.hp <= 0) {
-                this.bossDefeated(boss);
-            } else {
-                this.bossHealthBar.clear();
-                const barWidth = sizes.width - 300;
-                const barHeight = 20;
-                const healthPercentage = Math.max(0, boss.hp / boss.maxHp);
-                const healthWidth = barWidth * healthPercentage;
+            this.bossHealthBar.clear();
+            const barWidth = sizes.width - 300;
+            const barHeight = 20;
+            const healthPercentage = Math.max(0, boss.hp / boss.maxHp);
+            const healthWidth = barWidth * healthPercentage;
     
-                this.bossHealthBar.fillStyle(0x000000);
-                this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, barWidth, barHeight);
+            this.bossHealthBar.fillStyle(0x000000);
+            this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, barWidth, barHeight);
     
-                this.bossHealthBar.fillStyle(0xff0000);
-                this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
+            this.bossHealthBar.fillStyle(0xff0000);
+            this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
     
-                this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
-            }
+            this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
         }
     }
-
+    
     bossDefeated(boss) {
         boss.destroy();
         this.bossHealthBar.clear();
@@ -396,6 +399,8 @@ class GameScene extends Phaser.Scene {
     }
     
     createEnemies() {
+        this.enemies = []; 
+    
         const enemyData = [
             { x: 500, y: 540, sprite: "goblinIdle", type: "goblin" },
             { x: 900, y: 200, sprite: "setaIdle", type: "seta"},
@@ -420,14 +425,18 @@ class GameScene extends Phaser.Scene {
                 enemy.setAnimations('goblin');
             } else if (type === "seta") {
                 enemy.setAnimations('seta');
-            }else if (type === "boss") {
+            } else if (type === "boss") {
                 enemy.setAnimations('boss');
                 enemy.setScale(3);
+                enemy.hp = enemy.maxHp; 
             }
     
             this.enemies.push(enemy);
         });
+    
+        this.setupCollisions(); 
     }
+    
     
 
     
