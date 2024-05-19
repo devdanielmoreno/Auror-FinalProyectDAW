@@ -27,6 +27,9 @@ class GameScene extends Phaser.Scene {
         this.cartel;
         this.cartelVisible = true;
         this.potionUsages = 2;
+        this.bossHealthBar;
+        this.bossHealthText;
+        this.bossActive = false;
     }
 
     preload() {
@@ -36,9 +39,10 @@ class GameScene extends Phaser.Scene {
         this.load.image('stairs', 'assets/Mapa/TX Struct.png')
         this.load.image('stone', 'assets/Mapa/TX Tileset Stone Ground.png')
         this.load.image('wall', 'assets/Mapa/TX Tileset Wall.png')
+        this.load.image('zonaBoss','assets/Mapa/TX Props.png')
         this.load.image('cosas', 'assets/Mapa/TX Props.png')
         this.load.image('final','assets/Mapa/TX Props.png')
-        this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/Mapa.json')
+        this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/Mapas.json')
 
         /////Player//////
         this.load.atlas("player", "assets/jugador/player.png", "assets/jugador/playerSprites.json");
@@ -49,7 +53,6 @@ class GameScene extends Phaser.Scene {
         this.load.atlas("player_death", "assets/jugador/death.png", "assets/jugador/death.json");
         this.load.atlas("arriba", "assets/jugador/arriba.png", "assets/jugador/arriba.json");
         this.load.atlas("abajo", "assets/jugador/abajo.png", "assets/jugador/abajo.json");
-        this.load.image("potion", "assets/pocion.png");
 
 
         /////Enemigos/////
@@ -65,6 +68,12 @@ class GameScene extends Phaser.Scene {
         this.load.atlas("setaHit", "assets/enemigos/seta/setaHit.png", "assets/enemigos/seta/setaHit.json");
         this.load.atlas("setaDeath", "assets/enemigos/seta/setaDeath.png", "assets/enemigos/seta/setaDeath.json");
 
+        this.load.atlas("bossIdle", "assets/enemigos/boss/bossIdle.png", "assets/enemigos/boss/boss.json");
+        this.load.atlas("bossRun", "assets/enemigos/boss/bossRun.png", "assets/enemigos/boss/bossRun.json");
+        this.load.atlas("bossAttack", "assets/enemigos/boss/bossAttack.png", "assets/enemigos/boss/bossAttack.json");
+        this.load.atlas("bossHit", "assets/enemigos/boss/bossHit.png", "assets/enemigos/boss/bossHit.json");
+        this.load.atlas("bossDeath", "assets/enemigos/boss/bossDeath.png", "assets/enemigos/boss/bossDeath.json");
+
         /////HUD/////
         this.load.image("barra", "assets/HUD/barra.png");
         this.load.image("dialog", "assets/HUD/dialog.png");
@@ -72,9 +81,11 @@ class GameScene extends Phaser.Scene {
         this.load.image("rollbar2", "assets/HUD/roll2.png");
         this.load.image("rollbar3", "assets/HUD/roll3.png");
         this.load.image("rollbar4", "assets/HUD/roll4.png");
+        this.load.image("potion", "assets/HUD/pocion.png");
 
         /////Musica/////
         this.load.audio("bgMusica", "assets/Musica/musica.ogg");
+        this.load.audio("bossMusic", "assets/Musica/boss.mp3");
         this.load.audio("enemyAttack", "assets/Musica/enemyAttack.mp3");
         this.load.audio("playerAttack", "assets/Musica/playerAttack.mp3");
         this.load.audio("playerRoll", "assets/Musica/playerRoll.mp3");
@@ -84,11 +95,14 @@ class GameScene extends Phaser.Scene {
     create() {
         //restrablece las variables al morir si quiero que se guarde una piedra no pongo que se vuelva a poner por defecto
         this.rollCharges = 3;
+        this.bossActive = false;
+
         /////
 
         this.bgMusica = this.sound.add("bgMusica");
         this.bgMusica.play();
         this.bgMusica.loop = true;
+        this.bossMusic = this.sound.add("bossMusic");
 
         const map = this.make.tilemap({ key: 'tilemap' })
         const tileset = map.addTilesetImage('grass', 'base_tiles')
@@ -98,6 +112,7 @@ class GameScene extends Phaser.Scene {
         const tilestairs = map.addTilesetImage('TX Struct', 'stairs');
         const tilecosas = map.addTilesetImage('TX Props', 'cosas');
         const tilerunas = map.addTilesetImage('TX Props', 'cosas');
+        const tileZonaBoss = map.addTilesetImage('TX Props', 'zonaBoss');
         const tilecarteles = map.addTilesetImage('TX Props', 'cosas');
         const tilefinal = map.addTilesetImage('TX Props', 'final');
         const groundLayer = map.createLayer('ground', tileset);
@@ -108,6 +123,7 @@ class GameScene extends Phaser.Scene {
         const cosasLayer = map.createLayer('cosas', tilecosas);
         const cartelesLayer = map.createLayer('carteles', tilerunas);
         const runasLayer = map.createLayer('runas', tilecosas);
+        const zonaBossLayer = map.createLayer('zonaBoss', tileZonaBoss);
         const finalLayer = map.createLayer('final', tilefinal);
 
         this.player = new Player(this, 50, 340, "player");
@@ -158,24 +174,24 @@ class GameScene extends Phaser.Scene {
         this.events.on('playerDead', () => {
             this.scene.pause();
             this.bgMusica.stop();
+            this.bossMusic.stop();
+            this.bossHealthBar.clear();
+            this.bossHealthText.setText("");
             this.scene.run('scene-dead');
         });
 
-        this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9001).setScale(1.5); 
+        this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5); 
     
-        this.potionText = this.add.text(sizes.width + 100, sizes.height + 100, `Usos: ${this.potionUsages}`, { fontFamily: "Orbitron", fontSize: "24px", fill: "#ffffff"}).setScrollFactor(0).setDepth(9001);
+        this.potionText = this.add.text(sizes.width + 100, sizes.height + 100, `Usos: ${this.potionUsages}`, { fontFamily: "Orbitron", fontSize: "24px", fill: "#ffffff"}).setScrollFactor(0).setDepth(9009);
     
         this.input.keyboard.on('keydown-SPACE', () => {
             this.usePotion();
         });
         const potionBackground = this.add.circle(sizes.width - 70, sizes.height - 60, 50, 0x000000, 0.5)
-        .setStrokeStyle(10, 0x000000) 
+        .setStrokeStyle(10, 0x826744)
         .setScrollFactor(0)
-        .setDepth(9000);
+        .setDepth(9008);
     
-
-
-        
         this.rollbars = [
             this.add.image(87, 110, "rollbar1").setDepth(9001).setScrollFactor(0).setVisible(false),
             this.add.image(87, 110, "rollbar2").setDepth(9001).setScrollFactor(0).setVisible(false),
@@ -185,6 +201,13 @@ class GameScene extends Phaser.Scene {
         this.updateRollChargeCircles();
         this.map = map;
 
+        this.bossHealthBar = this.add.graphics();
+        this.bossHealthText = this.add.text(sizes.width / 2, sizes.height - 30, "", { fontSize: "20px", fill: "#ffffff" });
+        this.bossHealthText.setOrigin(0.5, 0.5);
+        this.bossHealthBar.setScrollFactor(0);
+        this.bossHealthText.setScrollFactor(0);
+        this.bossHealthBar.setDepth(10000);
+        this.bossHealthText.setDepth(10000);
 
         this.cursor = this.input.keyboard.createCursorKeys();
         this.zKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -275,7 +298,17 @@ class GameScene extends Phaser.Scene {
             if (this.player && enemy && enemy.body) {
                 enemy.updateMovement();
             }
+            if (enemy.enemyType === 'boss' && !this.bossActive) {
+                const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
+                if (distance <= 500) { 
+                    this.activateBoss(enemy);
+                }
+            }
         });
+
+        if (this.bossActive) {
+            this.updateBossHealthBar();
+        }
 
         const distance = Phaser.Math.Distance.Between(
             this.player.x,
@@ -300,6 +333,50 @@ class GameScene extends Phaser.Scene {
             }
         });
     }
+    activateBoss(boss) {
+        this.bossActive = true;
+        this.bgMusica.stop();
+        this.bossMusic.play({ loop: true });
+
+        this.bossHealthBar.clear();
+        this.bossHealthText.setStyle({
+            fontFamily: 'Orbitron',
+        });
+        this.bossHealthText.setText(`${boss.enemyType.toUpperCase()} VIDA: ${boss.hp}/${boss.maxHp}`);
+        this.updateBossHealthBar(boss);
+    }
+
+    updateBossHealthBar() {
+        const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
+        if (boss) {
+            if (boss.hp <= 0) {
+                this.bossDefeated(boss);
+            } else {
+                this.bossHealthBar.clear();
+                const barWidth = sizes.width - 300;
+                const barHeight = 20;
+                const healthPercentage = Math.max(0, boss.hp / boss.maxHp);
+                const healthWidth = barWidth * healthPercentage;
+
+                this.bossHealthBar.fillStyle(0x000000);
+                this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, barWidth, barHeight);
+
+                this.bossHealthBar.fillStyle(0xff0000);
+                this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
+
+                this.bossHealthText.setText(`Miquel: ${boss.hp}/${boss.maxHp}`);
+            }
+        }
+    }
+
+    bossDefeated(boss) {
+        boss.destroy();
+        this.bossHealthBar.clear();
+        this.bossHealthText.setText("");
+        this.bossMusic.stop();
+        this.bgMusica.play({ loop: true });
+        this.bossActive = false;
+    }
     createEnemies() {
         const enemyData = [
             { x: 500, y: 540, sprite: "goblinIdle", type: "goblin" },
@@ -314,6 +391,7 @@ class GameScene extends Phaser.Scene {
             { x: 1600, y: 1600, sprite: "setaIdle", type: "seta"},
             { x: 1900, y: 1700, sprite: "setaIdle", type: "seta"},
             { x: 2000, y: 1800, sprite: "goblinIdle", type: "goblin"},
+            { x: 2650, y: 480, sprite: "bossIdle", type: "boss"},
         ];
     
         enemyData.forEach(data => {
@@ -324,6 +402,8 @@ class GameScene extends Phaser.Scene {
                 enemy.setAnimations('goblin');
             } else if (type === "seta") {
                 enemy.setAnimations('seta');
+            }else if (type === "boss") {
+                enemy.setAnimations('boss');
             }
     
             this.enemies.push(enemy);
@@ -376,7 +456,6 @@ class GameScene extends Phaser.Scene {
             this.potionUsages--; 
             this.potionText.setText(`Usos: ${this.potionUsages}`);
             this.player.usePotion();
-            this.updateHealthBar();
         }
     }
     

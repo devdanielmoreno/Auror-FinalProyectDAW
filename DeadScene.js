@@ -25,6 +25,7 @@ class DeadScene extends Phaser.Scene {
         const restartButton = this.add.text(sizes.width / 2, sizes.height / 2 + 50, 'Reiniciar (R)', { fontSize: '32px', fill: '#ffffff' });
         restartButton.setOrigin(0.5);
         this.input.keyboard.on('keydown-R', () => {
+            this.sound.stopAll();
             this.scene.stop();
             this.scene.start('scene-game');
         });

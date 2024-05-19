@@ -24,6 +24,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.hp = 100;
             this.maxHp = 100;
             this.damage = 5;
+        }else if (type === 'boss') {
+            this.hp = 350;
+            this.maxHp = 350;
+            this.damage = 20;
         }
 
         this.hpBar = scene.add.graphics();
@@ -87,6 +91,32 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 frames: this.anims.generateFrameNames('setaDeath', { prefix: 'death', end: 3, zeroPad: 5 }),
                 frameRate: 4
             });
+        } else if (type === 'boss') {
+            this.anims.create({
+                key: 'bossIdle',
+                frames: this.anims.generateFrameNames('bossIdle', { prefix: 'boss', end: 7, zeroPad: 5 }),
+                frameRate: 8
+            });
+            this.anims.create({
+                key: 'bossRun',
+                frames: this.anims.generateFrameNames('bossRun', { prefix: 'bossRun', end: 7, zeroPad: 5 }),
+                frameRate: 8
+            });
+            this.anims.create({
+                key: 'bossAttack',
+                frames: this.anims.generateFrameNames('bossAttack', { prefix: 'attack', end: 15, zeroPad: 5 }),
+                frameRate: 15
+            });
+            this.anims.create({
+                key: 'bossHit',
+                frames: this.anims.generateFrameNames('bossHit', { prefix: 'hit', end: 2, zeroPad: 5 }),
+                frameRate: 3
+            });
+            this.anims.create({
+                key: 'bossDeath',
+                frames: this.anims.generateFrameNames('bossDeath', { prefix: 'death', end: 7, zeroPad: 5 }),
+                frameRate: 8
+            });
         }
     }
 
@@ -121,7 +151,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.anims.play(`${this.enemyType}Death`, true);
             this.setVelocity(0);
 
-            if (this.enemyType !== "seta") {
+            if (this.enemyType !== "seta" && this.enemyType !== "boss") {
                 const moveDistance = this.flipX ? 50 : -50;
 
                 this.scene.tweens.add({
