@@ -16,6 +16,7 @@ class DeadScene extends Phaser.Scene {
     create() {
         this.muerte = this.sound.add("muerte");
         this.muerte.play();
+        this.muerte.setVolume(0.2);
         const background = this.add.rectangle(0, 0, sizes.width, sizes.height, 0x000000, 0.5);
         background.setOrigin(0);
 

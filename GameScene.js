@@ -36,6 +36,7 @@ class GameScene extends Phaser.Scene {
         /////Mapa//////
         this.load.image('base_tiles', 'assets/Mapa/TX Tileset Grass.png')
         this.load.image('obsta', 'assets/Mapa/TX Plant.png')
+        this.load.image('detras', 'assets/Mapa/TX Props.png')
         this.load.image('stairs', 'assets/Mapa/TX Struct.png')
         this.load.image('stone', 'assets/Mapa/TX Tileset Stone Ground.png')
         this.load.image('wall', 'assets/Mapa/TX Tileset Wall.png')
@@ -107,6 +108,7 @@ class GameScene extends Phaser.Scene {
         const map = this.make.tilemap({ key: 'tilemap' })
         const tileset = map.addTilesetImage('grass', 'base_tiles')
         const tile = map.addTilesetImage('obstacles', 'obsta');
+        const tileDetras = map.addTilesetImage('TX Props', 'detras');
         const tilewall = map.addTilesetImage('TX Tileset Wall', 'wall');
         const tilepiedra = map.addTilesetImage('TX Tileset Stone Ground', 'stone');
         const tilestairs = map.addTilesetImage('TX Struct', 'stairs');
@@ -118,6 +120,7 @@ class GameScene extends Phaser.Scene {
         const groundLayer = map.createLayer('ground', tileset);
         const stoneLayer = map.createLayer('piedra', tilepiedra);
         const obstaLayer = map.createLayer('obstacles', tile);
+        const detrasLayer = map.createLayer('detras', tileDetras);
         const wallLayer = map.createLayer('paredes', tilewall);
         const stairLayer = map.createLayer('escaleras', tilestairs);
         const cosasLayer = map.createLayer('cosas', tilecosas);
@@ -131,11 +134,12 @@ class GameScene extends Phaser.Scene {
 
         this.createEnemies();
 
-        this.physics.add.collider(this.player, obstaLayer)
-        this.physics.add.collider(this.enemies, obstaLayer)
         obstaLayer.setCollisionBetween(65, 189)
+        obstaLayer.setDepth(9000);
         this.physics.add.collider(this.player, wallLayer)
+        this.physics.add.collider(this.enemies, wallLayer)
         wallLayer.setCollisionBetween(338, 437)
+        stairLayer.setCollisionBetween(664, 697)
         wallLayer.setDepth(1000);
         stairLayer.setDepth(1000);
         this.physics.add.collider(this.player, cosasLayer)
@@ -143,7 +147,11 @@ class GameScene extends Phaser.Scene {
         cosasLayer.setDepth(1001);
         finalLayer.setCollisionByExclusion([-1]);
         this.physics.add.collider(this.player, finalLayer, this.finalA, null, this);
-
+        detrasLayer.setAlpha(0);
+        detrasLayer.setCollision(1053)
+        this.physics.add.collider(this.player, detrasLayer);
+        this.physics.add.collider(this.enemies, detrasLayer)
+        
         this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
@@ -162,16 +170,17 @@ class GameScene extends Phaser.Scene {
 
         this.healthText.setScrollFactor(0);
         this.healthBar.setScrollFactor(0);
-        this.healthText.setDepth(9000);
-        this.healthBar.setDepth(9000);
+        this.healthText.setDepth(9003);
+        this.healthBar.setDepth(9003);
 
         const barraImage = this.add.image(93, this.healthText.y + this.healthText.height + 20, "barra");
         barraImage.setScrollFactor(0);
-        barraImage.setDepth(9001);
+        barraImage.setDepth(9004);
 
         this.cartel = this.add.image(300, 180, "dialog").setVisible(false);
 
         this.events.on('playerDead', () => {
+            this.resetBossHealth(); 
             this.scene.pause();
             this.bgMusica.stop();
             this.bossMusic.stop();
@@ -179,6 +188,7 @@ class GameScene extends Phaser.Scene {
             this.bossHealthText.setText(""); 
             this.scene.run('scene-dead');
         });
+        
 
         this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5); 
     
@@ -345,6 +355,13 @@ class GameScene extends Phaser.Scene {
         });
         this.updateBossHealthBar();
     }
+    resetBossHealth() {
+        const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
+        if (boss) {
+            boss.hp = boss.maxHp;
+        }
+    }
+    
     
     updateBossHealthBar() {
         const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
@@ -422,7 +439,7 @@ class GameScene extends Phaser.Scene {
         });
     }
     mostrarDialogo() {
-        this.cartel.setVisible(true).setDepth(1001);
+        this.cartel.setVisible(true).setDepth(9001);
         this.time.delayedCall(5000, () => {
             this.cartel.setVisible(false);
         });

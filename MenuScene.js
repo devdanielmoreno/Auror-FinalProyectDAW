@@ -83,7 +83,7 @@ class MenuScene extends Phaser.Scene {
                 const explanationText = this.add.text(
                     sizes.width / 2,
                     sizes.height / 2 - 40,
-                    "¡Tu pueblo ha sido invadido!\n\nTu misión es liberarlo\nmatando al boss\ny llegando a la estatua de la diosa Auror",
+                    "¡Tu pueblo ha sido invadido!\n\nTu misión es liberarlo\neliminando al jefe\ny llegando a la estatua de la diosa Auror",
                     {
                         fontSize: '100px', 
                         fill: 'white',
