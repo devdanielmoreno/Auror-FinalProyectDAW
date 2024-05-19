@@ -58,6 +58,7 @@ class OpcionesScene extends Phaser.Scene {
             this.volume = Math.min(this.volume + 0.1, 1);
             volumeFill.setScale(1, this.volume);
             this.scene.get("scene-game").bgMusica.setVolume(this.volume);
+            this.scene.get("scene-game").bossMusic.setVolume(this.volume);
         });
 
         const volumeDownArea = this.add.rectangle(
@@ -73,6 +74,7 @@ class OpcionesScene extends Phaser.Scene {
             this.volume = Math.max(this.volume - 0.1, 0);
             volumeFill.setScale(1, this.volume);
             this.scene.get("scene-game").bgMusica.setVolume(this.volume);
+            this.scene.get("scene-game").bossMusic.setVolume(this.volume);
         });
 
         this.add
@@ -87,6 +89,7 @@ class OpcionesScene extends Phaser.Scene {
         this.input.keyboard.on("keydown-ESC", () => {
             const gameScene = this.scene.get("scene-game");
             gameScene.bgMusica.resume();
+            gameScene.bossMusic.resume();
             this.scene.stop();
             this.scene.resume("scene-game");
         });

@@ -82,10 +82,24 @@ class MenuScene extends Phaser.Scene {
                 
                 const explanationText = this.add.text(
                     sizes.width / 2,
-                    sizes.height / 2 - 40,
-                    "¡Tu pueblo ha sido invadido!\n\nTu misión es liberarlo\neliminando al jefe\ny llegando a la estatua de la diosa Auror",
+                    sizes.height / 4 + 400,
+                    "CLICK PARA EMPEZAR",
                     {
                         fontSize: '100px', 
+                        fill: 'red',
+                        fontFamily: "Jaini Purva",
+                        align: 'center',
+                        stroke: '#000000',
+                        strokeThickness: 10
+                    }
+                ).setDepth(101).setOrigin(0.5);
+
+                const originalText = this.add.text(
+                    sizes.width / 2,
+                    sizes.height / 4 + 80,
+                    "¡Tu pueblo ha sido invadido!\n\nTu misión es liberarlo\neliminando al jefe\ny llegando a la estatua de la diosa Auror",
+                    {
+                        fontSize: '80px', 
                         fill: 'white',
                         fontFamily: "Jaini Purva",
                         align: 'center',
@@ -101,6 +115,7 @@ class MenuScene extends Phaser.Scene {
                     onComplete: () => {
                         this.input.once('pointerdown', () => {
                             explanationText.destroy();
+                            originalText.destroy();
                             this.time.delayedCall(1000, () => {
                                 this.startGame();
                             });

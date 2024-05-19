@@ -161,7 +161,7 @@ class GameScene extends Phaser.Scene {
         this.invincibleTime = 0;
 
         this.setupCollisions();
-
+        
         this.healthText = this.add.text(14, 13, `${this.player.hp}/100`, { fontFamily: "Orbitron", fontSize: '32px', fill: '#00ff00', stroke: 'black', strokeThickness: 3 });
         this.healthBar = this.add.graphics({ x: 15, y: this.healthText.y + this.healthText.height + 5 });
         const baraWidth = Math.max(0, this.player.hp / this.player.maxHp * sizes.width / 10);
@@ -269,6 +269,7 @@ class GameScene extends Phaser.Scene {
             this.scene.pause();
             this.scene.launch('scene-options');
             this.bgMusica.pause();
+            this.bossMusic.pause();
         });
         if (Phaser.Input.Keyboard.JustDown(this.xKey)) {
             this.player.roll();
@@ -285,7 +286,7 @@ class GameScene extends Phaser.Scene {
             this.player.attack();
         }
         this.player.updateHitboxPosition();
-
+        
         this.events.on('updateHealthBar', () => {
             this.enemies.forEach(enemy => {
                 if (enemy && enemy.updateHealthBar) {
@@ -351,6 +352,7 @@ class GameScene extends Phaser.Scene {
                 this.mostrarDialogo();
             }
         });
+
     }
     activateBoss(boss) {
         this.bossActive = true;
@@ -376,7 +378,11 @@ class GameScene extends Phaser.Scene {
             this.bossHealthBar.clear();
             const barWidth = sizes.width - 300;
             const barHeight = 20;
-            const healthPercentage = Math.max(0, boss.hp / boss.maxHp);
+    
+            boss.hp = Math.max(0, boss.hp);
+    
+            const healthPercentage = boss.hp / boss.maxHp;
+    
             const healthWidth = barWidth * healthPercentage;
     
             this.bossHealthBar.fillStyle(0x000000);
@@ -387,15 +393,6 @@ class GameScene extends Phaser.Scene {
     
             this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
         }
-    }
-    
-    bossDefeated(boss) {
-        boss.destroy();
-        this.bossHealthBar.clear();
-        this.bossHealthText.setText("");
-        this.bossMusic.stop();
-        this.bgMusica.play({ loop: true });
-        this.bossActive = false;
     }
     
     createEnemies() {
@@ -437,9 +434,6 @@ class GameScene extends Phaser.Scene {
         this.setupCollisions(); 
     }
     
-    
-
-    
     setupCollisions() {
         this.enemies.forEach(enemy => {
             this.physics.add.collider(enemy, this.player, () => {
@@ -477,6 +471,7 @@ class GameScene extends Phaser.Scene {
             this.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
     
             this.sound.play("enemyAttack", { volume: 0.2 });
+
         }
     }
     usePotion() {

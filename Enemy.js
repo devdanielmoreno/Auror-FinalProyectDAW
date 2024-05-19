@@ -25,8 +25,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.maxHp = 100;
             this.damage = 5;
         }else if (type === 'boss') {
-            this.hp = 350;
-            this.maxHp = 350;
+            this.hp = 3;
+            this.maxHp = 3;
             this.damage = 20;
         }
 
@@ -91,6 +91,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 frames: this.anims.generateFrameNames('setaDeath', { prefix: 'death', end: 3, zeroPad: 5 }),
                 frameRate: 4
             });
+            
         } else if (type === 'boss') {
             this.anims.create({
                 key: 'bossIdle',
@@ -126,14 +127,16 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     updateHealthBar() {
-        const barWidth = 80;
-        const barHeight = 5;
-        const redBarColor = 0xff0000;
+        if (this.enemyType !== 'boss') {
+            const barWidth = 80;
+            const barHeight = 5;
+            const redBarColor = 0xff0000;
 
-        this.hpBar.clear();
-        this.hpBar.fillStyle(redBarColor);
-        this.hpBar.fillRect(this.x - barWidth / 2, this.y - this.displayHeight / 2 - barHeight - 10, Math.max(0, barWidth * (this.hp / this.maxHp)),barHeight);
-        this.hpBar.setDepth(9001);
+            this.hpBar.clear();
+            this.hpBar.fillStyle(redBarColor);
+            this.hpBar.fillRect(this.x - barWidth / 2, this.y - this.displayHeight / 2 - barHeight - 10, Math.max(0, barWidth * (this.hp / this.maxHp)),barHeight);
+            this.hpBar.setDepth(9001);
+        }
     }
 
     update() {
