@@ -42,7 +42,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('zonaBoss','assets/Mapa/TX Props.png')
         this.load.image('cosas', 'assets/Mapa/TX Props.png')
         this.load.image('final','assets/Mapa/TX Props.png')
-        this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/Mapas.json')
+        this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/Mapa.json')
 
         /////Player//////
         this.load.atlas("player", "assets/jugador/player.png", "assets/jugador/playerSprites.json");
