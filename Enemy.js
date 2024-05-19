@@ -25,8 +25,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.maxHp = 100;
             this.damage = 5;
         }else if (type === 'boss') {
-            this.hp = 3;
-            this.maxHp = 3;
+            this.hp = 350;
+            this.maxHp = 350;
             this.damage = 20;
         }
 

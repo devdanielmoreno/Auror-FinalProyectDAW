@@ -147,6 +147,7 @@ class GameScene extends Phaser.Scene {
         cosasLayer.setCollisionBetween(911, 1141)
         cosasLayer.setDepth(1001);
         finalLayer.setCollisionByExclusion([-1]);
+
         this.physics.add.collider(this.player, finalLayer, this.finalA, null, this);
         detrasLayer.setAlpha(0);
         detrasLayer.setCollision(1053)
@@ -497,13 +498,17 @@ class GameScene extends Phaser.Scene {
     }
     
     finalA() {
-        this.cameras.main.fadeOut(1000, 0, 0, 0);
-        this.cameras.main.once('camerafadeoutcomplete', () => {
-            this.bgMusica.stop();
-            this.player.disableBody(true, true);
-            this.scene.start('scene-end');
-        });
+        const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
+        if (boss && boss.hp <= 0) {
+            this.cameras.main.fadeOut(1000, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.bgMusica.stop();
+                this.player.disableBody(true, true);
+                this.scene.start('scene-end');
+            });
+        } 
     }
+    
     
     
 }
