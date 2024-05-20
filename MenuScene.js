@@ -100,7 +100,7 @@ class MenuScene extends Phaser.Scene {
                     "¡Tu pueblo ha sido invadido!\n\nTu misión es liberarlo\neliminando al jefe\ny llegando a la estatua de la diosa Auror",
                     {
                         fontSize: '80px', 
-                        fill: 'white',
+                        fill: '#5a7a82',
                         fontFamily: "Jaini Purva",
                         align: 'center',
                         stroke: '#000000',
