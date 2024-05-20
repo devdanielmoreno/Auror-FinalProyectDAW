@@ -40,9 +40,9 @@ class GameScene extends Phaser.Scene {
         this.load.image('stairs', 'assets/Mapa/TX Struct.png')
         this.load.image('stone', 'assets/Mapa/TX Tileset Stone Ground.png')
         this.load.image('wall', 'assets/Mapa/TX Tileset Wall.png')
-        this.load.image('zonaBoss','assets/Mapa/TX Props.png')
+        this.load.image('zonaBoss', 'assets/Mapa/TX Props.png')
         this.load.image('cosas', 'assets/Mapa/TX Props.png')
-        this.load.image('final','assets/Mapa/TX Props.png')
+        this.load.image('final', 'assets/Mapa/TX Props.png')
         this.load.tilemapTiledJSON('tilemap', 'assets/Mapa/Mapa.json')
 
         /////Player//////
@@ -156,7 +156,7 @@ class GameScene extends Phaser.Scene {
         detrasLayer.setCollision(1053)
         this.physics.add.collider(this.player, detrasLayer);
         this.physics.add.collider(this.enemies, detrasLayer)
-        
+
         this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
@@ -166,7 +166,7 @@ class GameScene extends Phaser.Scene {
         this.invincibleTime = 0;
 
         this.setupCollisions();
-        
+
         this.healthText = this.add.text(14, 13, `${this.player.hp}/100`, { fontFamily: "Orbitron", fontSize: '32px', fill: '#00ff00', stroke: 'black', strokeThickness: 3 });
         this.healthBar = this.add.graphics({ x: 15, y: this.healthText.y + this.healthText.height + 5 });
         const baraWidth = Math.max(0, this.player.hp / this.player.maxHp * sizes.width / 10);
@@ -186,28 +186,28 @@ class GameScene extends Phaser.Scene {
 
         this.events.on('playerDead', () => {
             this.resetBossHealth();
-            this.updateBossHealthBar(); 
+            this.updateBossHealthBar();
             this.scene.pause();
             this.bgMusica.stop();
             this.bossMusic.stop();
             this.scene.run('scene-dead');
             this.time.delayedCall(3000, () => {
-                this.scene.restart(); 
+                this.scene.restart();
             });
         });
-        
-        this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5); 
-    
-        this.potionText = this.add.text(sizes.width + 100, sizes.height + 100, `Usos: ${this.potionUsages}`, { fontFamily: "Orbitron", fontSize: "24px", fill: "#ffffff"}).setScrollFactor(0).setDepth(9009);
-    
+
+        this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5);
+
+        this.potionText = this.add.text(sizes.width + 100, sizes.height + 100, `Usos: ${this.potionUsages}`, { fontFamily: "Orbitron", fontSize: "24px", fill: "#ffffff" }).setScrollFactor(0).setDepth(9009);
+
         this.input.keyboard.on('keydown-SPACE', () => {
             this.usePotion();
         });
         const potionBackground = this.add.circle(sizes.width - 70, sizes.height - 60, 50, 0x000000, 0.5)
-        .setStrokeStyle(10, 0x826744)
-        .setScrollFactor(0)
-        .setDepth(9008);
-    
+            .setStrokeStyle(10, 0x826744)
+            .setScrollFactor(0)
+            .setDepth(9008);
+
         this.rollbars = [
             this.add.image(87, 110, "rollbar1").setDepth(9001).setScrollFactor(0).setVisible(false),
             this.add.image(87, 110, "rollbar2").setDepth(9001).setScrollFactor(0).setVisible(false),
@@ -232,9 +232,7 @@ class GameScene extends Phaser.Scene {
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         this.arrow = this.add.image(2700, 480, 'arrow');
-        this.arrow.setVisible(false); 
-    
-        
+        this.arrow.setVisible(false);
     }
 
     update() {
@@ -294,7 +292,7 @@ class GameScene extends Phaser.Scene {
             this.player.attack();
         }
         this.player.updateHitboxPosition();
-        
+
         this.events.on('updateHealthBar', () => {
             this.enemies.forEach(enemy => {
                 if (enemy && enemy.updateHealthBar) {
@@ -302,17 +300,17 @@ class GameScene extends Phaser.Scene {
                 }
                 if (enemy.enemyType === 'boss' && !this.bossActive) {
                     const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
-                    if (distance <= 500) { 
+                    if (distance <= 500) {
                         this.activateBoss(enemy);
                     }
                 }
             });
         });
-        
+
 
         this.potionImage.setPosition(this.cameras.main.width - 72, this.cameras.main.height - 75);
         this.potionText.setPosition(this.cameras.main.width - 120, this.cameras.main.height - 55);
-    
+
         this.enemies.forEach(enemy => {
             if (enemy && enemy.hpbar) {
                 enemy.hpbar();
@@ -328,7 +326,7 @@ class GameScene extends Phaser.Scene {
             }
             if (enemy.enemyType === 'boss' && !this.bossActive) {
                 const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
-                if (distance <= 500) { 
+                if (distance <= 500) {
                     this.activateBoss(enemy);
                 }
             }
@@ -365,7 +363,7 @@ class GameScene extends Phaser.Scene {
         this.bossActive = true;
         this.bgMusica.stop();
         this.bossMusic.play({ loop: true });
-    
+
         this.bossHealthBar.clear();
         this.bossHealthText.setStyle({
             fontFamily: 'Orbitron',
@@ -378,67 +376,62 @@ class GameScene extends Phaser.Scene {
             boss.hp = boss.maxHp;
         }
     }
-    
+
     updateBossHealthBar() {
         const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
         if (boss) {
             this.bossHealthBar.clear();
             const barWidth = sizes.width - 300;
             const barHeight = 20;
-    
+
             boss.hp = Math.max(0, boss.hp);
-    
+
             const healthPercentage = boss.hp / boss.maxHp;
-    
+
             const healthWidth = barWidth * healthPercentage;
-    
+
             this.bossHealthBar.fillStyle(0x000000);
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, barWidth, barHeight);
-    
+
             this.bossHealthBar.fillStyle(0xff0000);
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
-    
+
             this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
-    
+
             if (boss.hp <= 0) {
+                this.arrow.setVisible(true);
+
                 if (this.bossMusic.isPlaying) {
                     this.bossMusic.stop();
                 }
                 if (!this.bossDeathSound.isPlaying) {
                     this.bossDeathSound.play();
                 }
-                this.arrow.setVisible(true);
-                const finalTile = this.map.findTile(t => t.layer.name === 'final');
-                if (finalTile) {
-                    this.arrow.x = finalTile.pixelX;
-                    this.arrow.y = finalTile.pixelY;
-                }
+
             }
-            
-            
         }
     }
-    
-    
+
+
     createEnemies() {
-        this.enemies = []; 
-    
+        this.enemies = [];
+
         const enemyData = [
             { x: 500, y: 540, sprite: "goblinIdle", type: "goblin" },
-            { x: 900, y: 200, sprite: "setaIdle", type: "seta"},
-            { x: 1800, y: 840, sprite: "goblinIdle", type: "goblin"},
-            { x: 1700, y: 340, sprite: "setaIdle", type: "seta"},
-            { x: 1100, y: 600, sprite: "goblinIdle", type: "goblin"},
-            { x: 1400, y: 700, sprite: "setaIdle", type: "seta"},
-            { x: 700, y: 1900, sprite: "goblinIdle", type: "goblin"},
-            { x: 750, y: 1800, sprite: "goblinIdle", type: "goblin"},
-            { x: 830, y: 1800, sprite: "goblinIdle", type: "goblin"},
-            { x: 1600, y: 1600, sprite: "setaIdle", type: "seta"},
-            { x: 1900, y: 1700, sprite: "setaIdle", type: "seta"},
-            { x: 2000, y: 1800, sprite: "goblinIdle", type: "goblin"},
-            { x: 2650, y: 480, sprite: "bossIdle", type: "boss"},
+            { x: 900, y: 200, sprite: "setaIdle", type: "seta" },
+            { x: 1800, y: 840, sprite: "goblinIdle", type: "goblin" },
+            { x: 1700, y: 340, sprite: "setaIdle", type: "seta" },
+            { x: 1100, y: 600, sprite: "goblinIdle", type: "goblin" },
+            { x: 1400, y: 700, sprite: "setaIdle", type: "seta" },
+            { x: 700, y: 1900, sprite: "goblinIdle", type: "goblin" },
+            { x: 750, y: 1800, sprite: "goblinIdle", type: "goblin" },
+            { x: 830, y: 1800, sprite: "goblinIdle", type: "goblin" },
+            { x: 1600, y: 1600, sprite: "setaIdle", type: "seta" },
+            { x: 1900, y: 1700, sprite: "setaIdle", type: "seta" },
+            { x: 2000, y: 1800, sprite: "goblinIdle", type: "goblin" },
+            { x: 2650, y: 480, sprite: "bossIdle", type: "boss" },
         ];
-    
+
         enemyData.forEach(data => {
             const { x, y, sprite, type } = data;
             const enemy = new Enemy(this, x, y, sprite, type);
@@ -450,15 +443,15 @@ class GameScene extends Phaser.Scene {
             } else if (type === "boss") {
                 enemy.setAnimations('boss');
                 enemy.setScale(3);
-                enemy.hp = enemy.maxHp; 
+                enemy.hp = enemy.maxHp;
             }
-    
+
             this.enemies.push(enemy);
         });
-    
-        this.setupCollisions(); 
+
+        this.setupCollisions();
     }
-    
+
     setupCollisions() {
         this.enemies.forEach(enemy => {
             this.physics.add.collider(enemy, this.player, () => {
@@ -483,31 +476,31 @@ class GameScene extends Phaser.Scene {
         if (this.isRolling || this.invincibleTime > this.time.now || this.player.hp <= 0) {
             return;
         }
-    
+
         if (this.time.now > this.lastAttackTime + 1500) {
             this.lastAttackTime = this.time.now;
             this.player.hp = Math.max(0, this.player.hp - enemy.damage);
-    
+
             this.invincibleTime = this.time.now + 2000;
-    
+
             this.healthText.setText(`${this.player.hp}/100`);
             const baraWidth = Math.max(0, this.player.hp / this.player.maxHp * sizes.width / 10);
             const baraColor = this.player.hp <= 20 ? 0xff0000 : (this.player.hp <= 50 ? 0xffff00 : 0x00ff00);
             this.healthBar.clear().fillStyle(baraColor, 1).fillRect(0, 0, baraWidth, 20);
-    
+
             this.sound.play("enemyAttack", { volume: 0.2 });
 
         }
     }
     usePotion() {
-        if (this.potionUsages > 0) { 
+        if (this.potionUsages > 0) {
             this.player.hp = Math.min(this.player.maxHp, this.player.hp);
-            this.potionUsages--; 
+            this.potionUsages--;
             this.potionText.setText(`Usos: ${this.potionUsages}`);
             this.player.usePotion();
         }
     }
-    
+
     finalA() {
         const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
         if (boss && boss.hp <= 0) {
@@ -517,10 +510,10 @@ class GameScene extends Phaser.Scene {
                 this.player.disableBody(true, true);
                 this.scene.start('scene-end');
             });
-        } 
+        }
     }
-    
-    
-    
+
+
+
 }
 export default GameScene;
