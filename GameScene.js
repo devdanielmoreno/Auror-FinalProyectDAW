@@ -92,6 +92,7 @@ class GameScene extends Phaser.Scene {
         this.load.audio("playerAttack", "assets/Musica/playerAttack.mp3");
         this.load.audio("playerRoll", "assets/Musica/playerRoll.mp3");
         this.load.audio("healSound", "assets/Musica/healsound.wav");
+        this.load.audio("bossDeathSound", "assets/Musica/bossDeath.mp3");
     }
 
     create() {
@@ -105,6 +106,8 @@ class GameScene extends Phaser.Scene {
         this.bgMusica.play();
         this.bgMusica.loop = true;
         this.bossMusic = this.sound.add("bossMusic");
+        this.bossDeathSound = this.sound.add('bossDeathSound');
+
 
         const map = this.make.tilemap({ key: 'tilemap' })
         const tileset = map.addTilesetImage('grass', 'base_tiles')
@@ -398,13 +401,21 @@ class GameScene extends Phaser.Scene {
             this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
     
             if (boss.hp <= 0) {
+                if (this.bossMusic.isPlaying) {
+                    this.bossMusic.stop();
+                }
+                if (!this.bossDeathSound.isPlaying) {
+                    this.bossDeathSound.play();
+                }
                 this.arrow.setVisible(true);
                 const finalTile = this.map.findTile(t => t.layer.name === 'final');
                 if (finalTile) {
-                    this.arrow.targetX = finalTile.pixelX;
-                    this.arrow.targetY = finalTile.pixelY;
+                    this.arrow.x = finalTile.pixelX;
+                    this.arrow.y = finalTile.pixelY;
                 }
             }
+            
+            
         }
     }
     
@@ -502,7 +513,7 @@ class GameScene extends Phaser.Scene {
         if (boss && boss.hp <= 0) {
             this.cameras.main.fadeOut(1000, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.bgMusica.stop();
+                this.bossMusic.stop();
                 this.player.disableBody(true, true);
                 this.scene.start('scene-end');
             });
