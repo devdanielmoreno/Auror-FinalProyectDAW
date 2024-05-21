@@ -84,6 +84,7 @@ class GameScene extends Phaser.Scene {
         this.load.image("rollbar4", "assets/HUD/roll4.png");
         this.load.image("potion", "assets/HUD/pocion.png");
         this.load.image('arrow', 'assets/HUD/arrow.png');
+        this.load.image('rod_image', 'assets/HUD/rod.jpeg');
 
         /////Musica/////
         this.load.audio("bgMusica", "assets/Musica/musica.ogg");
@@ -512,8 +513,6 @@ class GameScene extends Phaser.Scene {
             });
         }
     }
-
-
-
+    
 }
 export default GameScene;
