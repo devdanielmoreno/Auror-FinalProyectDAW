@@ -52,7 +52,7 @@ class MenuScene extends Phaser.Scene {
         const backgroundImage2 = this.add.image(0, 0, "background2")
             .setOrigin(0, 0)
             .setDisplaySize(sizes.width, sizes.height)
-            .setAlpha(0); 
+            .setAlpha(0);
 
         const titleText = this.add.image(sizes.width / 2, sizes.height / 4 - 60, "titulo");
 

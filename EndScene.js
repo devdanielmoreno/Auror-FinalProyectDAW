@@ -10,9 +10,9 @@ class EndScene extends Phaser.Scene {
         const centerY = this.cameras.main.centerY;
 
         const text = this.add.text(
-            centerX - 180, 
+            centerX - 220, 
             centerY - 60,
-            "Gracias amigo mío,\nSabía que podía confiar en ti",
+            "Gracias amigo mío,\nSabía que podía confiar en ti,\n-Rod",
             {
                 fontFamily: "Orbitron",
                 fontSize: '50px',
@@ -24,16 +24,16 @@ class EndScene extends Phaser.Scene {
         ).setOrigin(0.5);
 
         const rodImage = this.add.image(
-            text.x + text.width / 2 + 150, 
+            text.x + text.width / 2 + 180, 
             text.y - 10,
             'rod_image'
-        ).setOrigin(0.5).setScale(0.2);
+        ).setOrigin(0.5).setScale(0.3);
 
         this.time.delayedCall(3000, () => {
             const continueText = this.add.text(
                 this.cameras.main.width - 10, 
                 this.cameras.main.height - 10, 
-                "Continuar...",
+                "Continuara...",
                 {
                     fontFamily: "Orbitron",
                     fontSize: '50px',
