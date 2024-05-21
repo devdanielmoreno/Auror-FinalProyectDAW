@@ -9,7 +9,6 @@ const sizes = {
 }
 
 const speedDown = 300
-
 class GameScene extends Phaser.Scene {
     constructor() {
         super("scene-game");
@@ -77,11 +76,11 @@ class GameScene extends Phaser.Scene {
         this.load.atlas("bossHit", "assets/enemigos/boss/bossHit.png", "assets/enemigos/boss/bossHit.json");
         this.load.atlas("bossDeath", "assets/enemigos/boss/bossDeath.png", "assets/enemigos/boss/bossDeath.json");
 
-        this.load.atlas("bosssIdle", "assets/enemigos/boss/bossIdle.png", "assets/enemigos/boss/boss.json");
-        this.load.atlas("bosssRun", "assets/enemigos/boss/bossRun.png", "assets/enemigos/boss/bossRun.json");
-        this.load.atlas("bosssAttack", "assets/enemigos/boss/bossAttack.png", "assets/enemigos/boss/bossAttack.json");
-        this.load.atlas("bosssHit", "assets/enemigos/boss/bossHit.png", "assets/enemigos/boss/bossHit.json");
-        this.load.atlas("bosssDeath", "assets/enemigos/boss/bossDeath.png", "assets/enemigos/boss/bossDeath.json");
+        this.load.atlas("bosssIdle", "assets/enemigos/miniboss/cala.png", "assets/enemigos/miniboss/cala.json");
+        this.load.atlas("bosssRun", "assets/enemigos/miniboss/calabera.png", "assets/enemigos/miniboss/calabera.json");
+        this.load.atlas("bosssAttack", "assets/enemigos/miniboss/calabera.png", "assets/enemigos/miniboss/calabera.json");
+        this.load.atlas("bosssHit", "assets/enemigos/miniboss/calabera.png", "assets/enemigos/miniboss/calabera.json");
+        this.load.atlas("bosssDeath", "assets/enemigos/miniboss/cala.png", "assets/enemigos/miniboss/cala.json");
 
         /////HUD/////
         this.load.image("barra", "assets/HUD/barra.png");
@@ -208,33 +207,28 @@ class GameScene extends Phaser.Scene {
         });
         this.anims.create({
             key: 'bosssIdle',
-            frames: this.anims.generateFrameNames('bosssIdle', { prefix: 'boss', end: 7, zeroPad: 5 }),
-            frameRate: 7,
-            scale: { x: 2, y: 2 }
+            frames: this.anims.generateFrameNames('bosssIdle', { prefix: 'cala', end: 3, zeroPad: 5 }),
+            frameRate: 4,
         });
         this.anims.create({
             key: 'bosssRun',
-            frames: this.anims.generateFrameNames('bosssRun', { prefix: 'bossRun', end: 7, zeroPad: 5 }),
+            frames: this.anims.generateFrameNames('bosssRun', { prefix: 'calabera', end: 7, zeroPad: 5 }),
             frameRate: 8,
-            scale: { x: 2, y: 2 }
         });
         this.anims.create({
             key: 'bosssAttack',
-            frames: this.anims.generateFrameNames('bosssAttack', { prefix: 'attack', end: 15, zeroPad: 5 }),
-            frameRate: 15,
-            scale: { x: 2, y: 2 }
+            frames: this.anims.generateFrameNames('bosssAttack', { prefix: 'calabera', end: 7, zeroPad: 5 }),
+            frameRate: 8,
         });
         this.anims.create({
             key: 'bosssHit',
-            frames: this.anims.generateFrameNames('bosssHit', { prefix: 'hit', end: 2, zeroPad: 5 }),
-            frameRate: 3,
-            scale: { x: 2, y: 2 }
+            frames: this.anims.generateFrameNames('bosssHit', { prefix: 'calabera', end: 7, zeroPad: 5 }),
+            frameRate: 8,
         });
         this.anims.create({
             key: 'bosssDeath',
-            frames: this.anims.generateFrameNames('bosssDeath', { prefix: 'death', end: 7, zeroPad: 5 }),
-            frameRate: 8,
-            scale: { x: 2, y: 2 }
+            frames: this.anims.generateFrameNames('bosssDeath', { prefix: 'cala', end: 3, zeroPad: 5 }),
+            frameRate: 4,
         });
 
         this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5);
@@ -484,7 +478,7 @@ class GameScene extends Phaser.Scene {
                 enemy.setAnimations('seta');
             } else if (type === "boss") {
                 enemy.setAnimations('boss');
-                enemy.setScale(3);
+                enemy.setScale(1.5);
                 enemy.hp = enemy.maxHp;
             }
 
@@ -505,8 +499,8 @@ class GameScene extends Phaser.Scene {
                 const enemy = new Enemy(this, x, y, sprite, type);
                 if (type === "bosss") {
                     enemy.setAnimations('boss');
-                    enemy.setScale(2);
-                    enemy.setAcceleration(100);
+                    enemy.setScale(1.3);
+                    enemy.setAcceleration(20);
                     enemy.setVelocityX(this.playerSpeed);
                 }
                 this.enemies.push(enemy);

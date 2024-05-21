@@ -19,7 +19,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         if (type === 'goblin') {
             this.hp = 30;
             this.maxHp = 30;
-            this.damage = 30;
+            this.damage = 100;
         } else if (type === 'seta') {
             this.hp = 100;
             this.maxHp = 100;
@@ -96,67 +96,31 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 frameRate: 4
             });
             
-        } else if (type === 'bosss') {
-            this.anims.create({
-                key: 'bosssIdle',
-                frames: this.anims.generateFrameNames('bosssIdle', { prefix: 'boss', end: 7, zeroPad: 5 }),
-                frameRate: 7,
-                scale: { x: 2, y: 2 }
-            });
-            this.anims.create({
-                key: 'bosssRun',
-                frames: this.anims.generateFrameNames('bosssRun', { prefix: 'bossRun', end: 7, zeroPad: 5 }),
-                frameRate: 8,
-                scale: { x: 2, y: 2 }
-            });
-            this.anims.create({
-                key: 'bosssAttack',
-                frames: this.anims.generateFrameNames('bosssAttack', { prefix: 'attack', end: 15, zeroPad: 5 }),
-                frameRate: 15,
-                scale: { x: 2, y: 2 }
-            });
-            this.anims.create({
-                key: 'bosssHit',
-                frames: this.anims.generateFrameNames('bosssHit', { prefix: 'hit', end: 2, zeroPad: 5 }),
-                frameRate: 3,
-                scale: { x: 2, y: 2 }
-            });
-            this.anims.create({
-                key: 'bosssDeath',
-                frames: this.anims.generateFrameNames('bosssDeath', { prefix: 'death', end: 7, zeroPad: 5 }),
-                frameRate: 8,
-                scale: { x: 2, y: 2  }
-            });
         }else if (type === 'boss') {
             this.anims.create({
                 key: 'bossIdle',
-                frames: this.anims.generateFrameNames('bossIdle', { prefix: 'boss', end: 7, zeroPad: 5 }),
-                frameRate: 7,
-                scale: { x: 2, y: 2 }
+                frames: this.anims.generateFrameNames('bossIdle', { prefix: 'boss', end: 5, zeroPad: 5 }),
+                frameRate: 6,
             });
             this.anims.create({
                 key: 'bossRun',
-                frames: this.anims.generateFrameNames('bossRun', { prefix: 'bossRun', end: 7, zeroPad: 5 }),
-                frameRate: 8,
-                scale: { x: 2, y: 2 }
+                frames: this.anims.generateFrameNames('bossIdle', { prefix: 'boss', end: 5, zeroPad: 5 }),
+                frameRate: 6,
             });
             this.anims.create({
                 key: 'bossAttack',
-                frames: this.anims.generateFrameNames('bossAttack', { prefix: 'attack', end: 15, zeroPad: 5 }),
-                frameRate: 15,
-                scale: { x: 2, y: 2 }
+                frames: this.anims.generateFrameNames('bossAttack', { prefix: 'attack', end: 10, zeroPad: 5 }),
+                frameRate: 5,
             });
             this.anims.create({
                 key: 'bossHit',
-                frames: this.anims.generateFrameNames('bossHit', { prefix: 'hit', end: 2, zeroPad: 5 }),
-                frameRate: 3,
-                scale: { x: 2, y: 2 }
+                frames: this.anims.generateFrameNames('bossIdle', { prefix: 'boss', end: 5, zeroPad: 5 }),
+                frameRate: 6,
             });
             this.anims.create({
                 key: 'bossDeath',
-                frames: this.anims.generateFrameNames('bossDeath', { prefix: 'death', end: 7, zeroPad: 5 }),
-                frameRate: 8,
-                scale: { x: 2, y: 2  }
+                frames: this.anims.generateFrameNames('bossDeath', { prefix: 'death', end: 4, zeroPad: 5 }),
+                frameRate: 4,
             });
         }
     }
@@ -179,11 +143,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.updateMovement();
     }
     handleHit() {
+        if (this.enemyType !== 'boss' && this.enemyType !== 'miniboss') {
         this.anims.stop();
         this.anims.play(`${this.enemyType}Hit`, true);
         this.setVelocity(0);
         this.enemyHit = true;
-
+        }
         this.scene.time.delayedCall(500, () => {
             this.enemyHit = false;
         });
@@ -215,11 +180,16 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 this.y
             );
             
-            if (distance <= 300) {
+            const maxDistance = this.enemyType === 'boss' ? 500 : 300;
+            
+            if (distance <= maxDistance) {
                 if (distance <= 20) {
                     this.setVelocity(0);
                     this.anims.play(`${this.enemyType}Attack`, true);
-                } else {
+                } else if (this.enemyType === 'boss' && distance <= 150) {
+                    this.setVelocity(0);
+                    this.anims.play(`${this.enemyType}Attack`, true);
+                } else{
                     this.anims.play(`${this.enemyType}Run`, true);
                     this.scene.physics.moveToObject(this, this.scene.player);
                 }
@@ -229,5 +199,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             }
             this.updateHealthBar();
         }
+
     }
 }
