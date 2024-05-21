@@ -19,7 +19,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         if (type === 'goblin') {
             this.hp = 30;
             this.maxHp = 30;
-            this.damage = 100;
+            this.damage = 30;
         } else if (type === 'seta') {
             this.hp = 100;
             this.maxHp = 100;
@@ -187,8 +187,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                     this.setVelocity(0);
                     this.anims.play(`${this.enemyType}Attack`, true);
                 } else if (this.enemyType === 'boss' && distance <= 150) {
-                    this.setVelocity(0);
-                    this.anims.play(`${this.enemyType}Attack`, true);
+                    this.once('animationcomplete', () => {
+                        if (this.anims.play(`${this.enemyType}Attack`)) {
+                            this.setVelocity(0);
+                            this.anims.play(`${this.enemyType}Attack`, true);
+                        }
+                    });
                 } else{
                     this.anims.play(`${this.enemyType}Run`, true);
                     this.scene.physics.moveToObject(this, this.scene.player);
