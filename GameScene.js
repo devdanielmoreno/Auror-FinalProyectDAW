@@ -344,7 +344,16 @@ class GameScene extends Phaser.Scene {
                 }
             });
         });
-
+        if (this.bossActive) {
+            const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
+            if (boss && boss.hp <= boss.maxHp / 2) {
+                if (!this.bossEnemiesCreated) {
+                    this.createBossEnemies();
+                    this.bossEnemiesCreated = true;
+                }
+            }
+        }
+        
 
         this.potionImage.setPosition(this.cameras.main.width - 72, this.cameras.main.height - 75);
         this.potionText.setPosition(this.cameras.main.width - 81, this.cameras.main.height - 45);
@@ -432,19 +441,7 @@ class GameScene extends Phaser.Scene {
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
     
             this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
-    
-            if (boss.hp <= boss.maxHp / 2) {
-                if (!boss.hasSplit) {
-                    const newBoss1 = new Enemy(this, boss.x - 50, boss.y - 200, 'bossIdle', 'bosss');
-                    const newBoss2 = new Enemy(this, boss.x + 50, boss.y + 200, 'bossIdle', 'bosss');
-                    newBoss1.setScale(2);
-                    newBoss2.setScale(2);
-                    newBoss1.speed *= 3; 
-                    newBoss2.speed *= 3;
-                    this.enemies.push(newBoss1, newBoss2);
-                    boss.hasSplit = true;
-                }
-            }
+
     
             if (boss.hp <= 0) {
                 this.arrow.setVisible(true);
@@ -462,7 +459,7 @@ class GameScene extends Phaser.Scene {
 
     createEnemies() {
         this.enemies = [];
-    
+
         const enemyData = [
             { x: 500, y: 540, sprite: "goblinIdle", type: "goblin" },
             { x: 900, y: 200, sprite: "setaIdle", type: "seta" },
@@ -478,7 +475,7 @@ class GameScene extends Phaser.Scene {
             { x: 2000, y: 1800, sprite: "goblinIdle", type: "goblin" },
             { x: 2650, y: 480, sprite: "bossIdle", type: "boss" },
         ];
-    
+
         enemyData.forEach(data => {
             const { x, y, sprite, type } = data;
             const enemy = new Enemy(this, x, y, sprite, type);
@@ -491,42 +488,33 @@ class GameScene extends Phaser.Scene {
                 enemy.setAnimations('boss');
                 enemy.setScale(3);
                 enemy.hp = enemy.maxHp;
-            } else if (type === "bosss") {
-                enemy.setAnimations('boss');
             }
-    
+
             this.enemies.push(enemy);
         });
-    
+
         this.setupCollisions();
-    
-        // Añadimos el bloque condicional para dividir el jefe si su vida es menor o igual a la mitad
-        this.enemies.forEach(enemy => {
-            if (enemy.enemyType === 'boss') {
-                enemy.hasSplit = false; // Aseguramos que la bandera hasSplit esté inicializada en falso
-            }
-        });
-    
-        this.time.addEvent({
-            delay: 1000, // Revisar cada segundo
-            callback: () => {
-                this.enemies.forEach(enemy => {
-                    if (enemy.enemyType === 'boss' && enemy.hp <= enemy.maxHp / 2 && !enemy.hasSplit) {
-                        const newBoss1 = new Enemy(this, enemy.x - 50, enemy.y - 200, 'bossIdle', 'bosss');
-                        const newBoss2 = new Enemy(this, enemy.x + 50, enemy.y + 200, 'bossIdle', 'bosss');
-                        newBoss1.setScale(2);
-                        newBoss2.setScale(2);
-                        newBoss1.speed *= 3;
-                        newBoss2.speed *= 3;
-                        this.enemies.push(newBoss1, newBoss2);
-                        enemy.hasSplit = true;
-                    }
-                });
-            },
-            loop: true
-        });
     }
+    createBossEnemies() {
+        this.enemies = [];
+
+        const bossEnemiesData = [
+            { x: 2350, y: 280, sprite: "bossIdle", type: "bosss" },
+            { x: 2450, y: 580, sprite: "bossIdle", type: "bosss" },
+        ];
     
+        bossEnemiesData.forEach(data => {
+            const { x, y, sprite, type } = data;
+            const enemy = new Enemy(this, x, y, sprite, type);
+            if (type === "bosss") {
+                enemy.setAnimations('boss');
+                enemy.setScale(2);
+            }
+            this.enemies.push(enemy);
+        });
+        this.setupCollisions();
+    }
+
     setupCollisions() {
         this.enemies.forEach(enemy => {
             this.physics.add.collider(enemy, this.player, () => {
