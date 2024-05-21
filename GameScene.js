@@ -199,7 +199,7 @@ class GameScene extends Phaser.Scene {
 
         this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5);
 
-        this.potionText = this.add.text(sizes.width + 100, sizes.height + 100, `Usos: ${this.potionUsages}`, { fontFamily: "Orbitron", fontSize: "24px", fill: "#ffffff" }).setScrollFactor(0).setDepth(9009);
+        this.potionText = this.add.text(sizes.width - 50, sizes.height, `${this.potionUsages}`, { fontFamily: "Orbitron", fontSize: "24px", fill: "#ffffff" }).setScrollFactor(0).setDepth(9009);
 
         this.input.keyboard.on('keydown-SPACE', () => {
             this.usePotion();
@@ -310,7 +310,7 @@ class GameScene extends Phaser.Scene {
 
 
         this.potionImage.setPosition(this.cameras.main.width - 72, this.cameras.main.height - 75);
-        this.potionText.setPosition(this.cameras.main.width - 120, this.cameras.main.height - 55);
+        this.potionText.setPosition(this.cameras.main.width - 81, this.cameras.main.height - 45);
 
         this.enemies.forEach(enemy => {
             if (enemy && enemy.hpbar) {
@@ -497,7 +497,7 @@ class GameScene extends Phaser.Scene {
         if (this.potionUsages > 0) {
             this.player.hp = Math.min(this.player.maxHp, this.player.hp);
             this.potionUsages--;
-            this.potionText.setText(`Usos: ${this.potionUsages}`);
+            this.potionText.setText(`${this.potionUsages}`);
             this.player.usePotion();
         }
     }
