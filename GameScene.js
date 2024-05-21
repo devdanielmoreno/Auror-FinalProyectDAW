@@ -9,6 +9,7 @@ const sizes = {
 }
 
 const speedDown = 300
+
 class GameScene extends Phaser.Scene {
     constructor() {
         super("scene-game");
@@ -37,6 +38,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('base_tiles', 'assets/Mapa/TX Tileset Grass.png')
         this.load.image('obsta', 'assets/Mapa/TX Plant.png')
         this.load.image('detras', 'assets/Mapa/TX Props.png')
+        this.load.image('zonaSangre', 'assets/Mapa/blood.png')
         this.load.image('stairs', 'assets/Mapa/TX Struct.png')
         this.load.image('stone', 'assets/Mapa/TX Tileset Stone Ground.png')
         this.load.image('wall', 'assets/Mapa/TX Tileset Wall.png')
@@ -129,9 +131,11 @@ class GameScene extends Phaser.Scene {
         const tileZonaBoss = map.addTilesetImage('TX Props', 'zonaBoss');
         const tilecarteles = map.addTilesetImage('TX Props', 'cosas');
         const tilefinal = map.addTilesetImage('TX Props', 'final');
+        const tileSangre = map.addTilesetImage('blood', 'zonaSangre');
         const groundLayer = map.createLayer('ground', tileset);
         const stoneLayer = map.createLayer('piedra', tilepiedra);
         const obstaLayer = map.createLayer('obstacles', tile);
+        const sagreLayer = map.createLayer('zonaSangre', tileSangre);
         const detrasLayer = map.createLayer('detras', tileDetras);
         const wallLayer = map.createLayer('paredes', tilewall);
         const stairLayer = map.createLayer('escaleras', tilestairs);
@@ -145,7 +149,6 @@ class GameScene extends Phaser.Scene {
         this.player.scene = this;
 
         this.createEnemies();
-
         obstaLayer.setCollisionBetween(65, 189)
         obstaLayer.setDepth(9000);
         this.physics.add.collider(this.player, wallLayer)
@@ -190,7 +193,7 @@ class GameScene extends Phaser.Scene {
         barraImage.setScrollFactor(0);
         barraImage.setDepth(9004);
 
-        this.cartel = this.add.image(300, 180, "dialog").setVisible(false);
+        this.cartel = this.add.image(300, 200, "dialog").setVisible(false);
 
         this.events.on('playerDead', () => {
             this.resetBossHealth();
@@ -345,10 +348,10 @@ class GameScene extends Phaser.Scene {
             });
         });
         const bossss = this.enemies.find(enemy => enemy.enemyType === 'boss');
-        if (bossss && bossss.hp <= bossss.maxHp / 2) {
+        if (bossss && bossss.hp <= bossss.maxHp / 2 ) {
             this.createBossEnemies();
-
         }
+        
 
         this.potionImage.setPosition(this.cameras.main.width - 72, this.cameras.main.height - 75);
         this.potionText.setPosition(this.cameras.main.width - 81, this.cameras.main.height - 45);
@@ -503,6 +506,8 @@ class GameScene extends Phaser.Scene {
                 if (type === "bosss") {
                     enemy.setAnimations('boss');
                     enemy.setScale(2);
+                    enemy.setAcceleration(100);
+                    enemy.setVelocityX(this.playerSpeed);
                 }
                 this.enemies.push(enemy);
             });

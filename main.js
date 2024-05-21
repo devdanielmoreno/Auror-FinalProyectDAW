@@ -21,10 +21,10 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: speedDown },
-      debug: true
+      debug: false
     }
   },
-  scene: [GameScene, DeadScene, OpcionesScene,EndScene]
+  scene: [MenuScene, GameScene, DeadScene, OpcionesScene,EndScene]
 };
 
 const game = new Phaser.Game(config);
