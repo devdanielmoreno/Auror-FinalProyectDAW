@@ -16,12 +16,17 @@ class MenuScene extends Phaser.Scene {
         this.load.image("background", "assets/Mapa/Mapa.png");
         this.load.image("background2", "assets/Mapa/Mapa2.png"); 
         this.load.image("startButton", "assets/HUD/boton.png");
+        this.load.image("titulo", "assets/HUD/titulo.png");
+        this.load.image("carta", "assets/HUD/cartaa.png");
         this.input.setDefaultCursor('url(assets/HUD/cursor.png), pointer');
         this.load.audio("mInicio", "assets/Musica/inicio.ogg");
+        this.load.audio("paperSound", "assets/Musica/paperSound.mp3");
+
     }
 
     create() {
         this.mInicio = this.sound.add("mInicio");
+        this.paperSound = this.sound.add("paperSound");
         this.mInicio.play();
         this.mInicio.loop = true;
         this.mInicio.setVolume(0.2);
@@ -49,19 +54,7 @@ class MenuScene extends Phaser.Scene {
             .setDisplaySize(sizes.width, sizes.height)
             .setAlpha(0); 
 
-        const titleText = this.add.text(
-            sizes.width / 2,
-            sizes.height / 4 - 60,
-            "Auror",
-            {
-                fontSize: '200px',
-                fontWeight: 'bold',
-                fill: 'gray',
-                fontFamily: "Jaini Purva",
-                stroke: '#000000',
-                strokeThickness: 10
-            }
-        ).setDepth(100).setOrigin(0.5);
+        const titleText = this.add.image(sizes.width / 2, sizes.height / 4 - 60, "titulo");
 
         const startButton = this.add.image(sizes.width / 2, sizes.height / 2 + 50, "startButton");
         startButton.setInteractive();
@@ -79,34 +72,11 @@ class MenuScene extends Phaser.Scene {
                 titleText.destroy(); 
                 startButton.destroy(); 
                 createdByText.destroy(); 
-                
-                const explanationText = this.add.text(
-                    sizes.width / 2,
-                    sizes.height / 4 + 400,
-                    "CLICK PARA EMPEZAR",
-                    {
-                        fontSize: '100px', 
-                        fill: 'red',
-                        fontFamily: "Jaini Purva",
-                        align: 'center',
-                        stroke: '#000000',
-                        strokeThickness: 10
-                    }
-                ).setDepth(101).setOrigin(0.5);
 
-                const originalText = this.add.text(
-                    sizes.width / 2,
-                    sizes.height / 4 + 80,
-                    "¡Tu pueblo ha sido invadido!\n\nTu misión es liberarlo\neliminando al jefe\ny llegando a la estatua de la diosa Auror",
-                    {
-                        fontSize: '80px', 
-                        fill: '#5a7a82',
-                        fontFamily: "Jaini Purva",
-                        align: 'center',
-                        stroke: '#000000',
-                        strokeThickness: 10
-                    }
-                ).setDepth(101).setOrigin(0.5);
+
+                const originalText = this.add.image(sizes.width / 2, sizes.height / 4 + 230, "carta");
+                originalText.setScale(0.55);
+                this.paperSound.play();
 
                 this.tweens.add({
                     targets: backgroundImage2,
@@ -114,7 +84,6 @@ class MenuScene extends Phaser.Scene {
                     duration: 2000,
                     onComplete: () => {
                         this.input.once('pointerdown', () => {
-                            explanationText.destroy();
                             originalText.destroy();
                             this.time.delayedCall(1000, () => {
                                 this.startGame();
