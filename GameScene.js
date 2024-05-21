@@ -100,7 +100,7 @@ class GameScene extends Phaser.Scene {
         this.load.audio("playerRoll", "assets/Musica/playerRoll.mp3");
         this.load.audio("healSound", "assets/Musica/healsound.wav");
         this.load.audio("bossDeathSound", "assets/Musica/bossDeath.mp3");
-        
+
     }
 
     create() {
@@ -145,7 +145,7 @@ class GameScene extends Phaser.Scene {
         this.player.scene = this;
 
         this.createEnemies();
-    
+
         obstaLayer.setCollisionBetween(65, 189)
         obstaLayer.setDepth(9000);
         this.physics.add.collider(this.player, wallLayer)
@@ -231,7 +231,7 @@ class GameScene extends Phaser.Scene {
             key: 'bosssDeath',
             frames: this.anims.generateFrameNames('bosssDeath', { prefix: 'death', end: 7, zeroPad: 5 }),
             frameRate: 8,
-            scale: { x: 2, y: 2  }
+            scale: { x: 2, y: 2 }
         });
 
         this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5);
@@ -344,16 +344,11 @@ class GameScene extends Phaser.Scene {
                 }
             });
         });
-        if (this.bossActive) {
-            const boss = this.enemies.find(enemy => enemy.enemyType === 'boss');
-            if (boss && boss.hp <= boss.maxHp / 2) {
-                if (!this.bossEnemiesCreated) {
-                    this.createBossEnemies();
-                    this.bossEnemiesCreated = true;
-                }
-            }
+        const bossss = this.enemies.find(enemy => enemy.enemyType === 'boss');
+        if (bossss && bossss.hp <= bossss.maxHp / 2) {
+            this.createBossEnemies();
+
         }
-        
 
         this.potionImage.setPosition(this.cameras.main.width - 72, this.cameras.main.height - 75);
         this.potionText.setPosition(this.cameras.main.width - 81, this.cameras.main.height - 45);
@@ -431,18 +426,18 @@ class GameScene extends Phaser.Scene {
             const barWidth = sizes.width - 300;
             const barHeight = 20;
             boss.hp = Math.max(0, boss.hp);
-    
+
             const healthPercentage = boss.hp / boss.maxHp;
             const healthWidth = barWidth * healthPercentage;
-    
+
             this.bossHealthBar.fillStyle(0x000000);
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, barWidth, barHeight);
             this.bossHealthBar.fillStyle(0xff0000);
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
-    
+
             this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
 
-    
+
             if (boss.hp <= 0) {
                 this.arrow.setVisible(true);
                 if (this.bossMusic.isPlaying) {
@@ -454,7 +449,7 @@ class GameScene extends Phaser.Scene {
             }
         }
     }
-    
+
 
 
     createEnemies() {
@@ -496,25 +491,26 @@ class GameScene extends Phaser.Scene {
         this.setupCollisions();
     }
     createBossEnemies() {
-        this.enemies = [];
-
-        const bossEnemiesData = [
-            { x: 2350, y: 280, sprite: "bossIdle", type: "bosss" },
-            { x: 2450, y: 580, sprite: "bossIdle", type: "bosss" },
-        ];
+        if (!this.bossEnemiesCreated) {
+            const bossEnemiesData = [
+                { x: 2350, y: 280, sprite: "bossIdle", type: "bosss" },
+                { x: 2450, y: 580, sprite: "bossIdle", type: "bosss" },
+            ];
     
-        bossEnemiesData.forEach(data => {
-            const { x, y, sprite, type } = data;
-            const enemy = new Enemy(this, x, y, sprite, type);
-            if (type === "bosss") {
-                enemy.setAnimations('boss');
-                enemy.setScale(2);
-            }
-            this.enemies.push(enemy);
-        });
-        this.setupCollisions();
+            bossEnemiesData.forEach(data => {
+                const { x, y, sprite, type } = data;
+                const enemy = new Enemy(this, x, y, sprite, type);
+                if (type === "bosss") {
+                    enemy.setAnimations('boss');
+                    enemy.setScale(2);
+                }
+                this.enemies.push(enemy);
+            });
+            this.bossEnemiesCreated = true;
+    
+            this.setupCollisions();
+        }
     }
-
     setupCollisions() {
         this.enemies.forEach(enemy => {
             this.physics.add.collider(enemy, this.player, () => {
@@ -575,6 +571,6 @@ class GameScene extends Phaser.Scene {
             });
         }
     }
-    
+
 }
 export default GameScene;
