@@ -75,6 +75,12 @@ class GameScene extends Phaser.Scene {
         this.load.atlas("bossHit", "assets/enemigos/boss/bossHit.png", "assets/enemigos/boss/bossHit.json");
         this.load.atlas("bossDeath", "assets/enemigos/boss/bossDeath.png", "assets/enemigos/boss/bossDeath.json");
 
+        this.load.atlas("bosssIdle", "assets/enemigos/boss/bossIdle.png", "assets/enemigos/boss/boss.json");
+        this.load.atlas("bosssRun", "assets/enemigos/boss/bossRun.png", "assets/enemigos/boss/bossRun.json");
+        this.load.atlas("bosssAttack", "assets/enemigos/boss/bossAttack.png", "assets/enemigos/boss/bossAttack.json");
+        this.load.atlas("bosssHit", "assets/enemigos/boss/bossHit.png", "assets/enemigos/boss/bossHit.json");
+        this.load.atlas("bosssDeath", "assets/enemigos/boss/bossDeath.png", "assets/enemigos/boss/bossDeath.json");
+
         /////HUD/////
         this.load.image("barra", "assets/HUD/barra.png");
         this.load.image("dialog", "assets/HUD/dialog.png");
@@ -94,6 +100,7 @@ class GameScene extends Phaser.Scene {
         this.load.audio("playerRoll", "assets/Musica/playerRoll.mp3");
         this.load.audio("healSound", "assets/Musica/healsound.wav");
         this.load.audio("bossDeathSound", "assets/Musica/bossDeath.mp3");
+        
     }
 
     create() {
@@ -138,7 +145,7 @@ class GameScene extends Phaser.Scene {
         this.player.scene = this;
 
         this.createEnemies();
-
+    
         obstaLayer.setCollisionBetween(65, 189)
         obstaLayer.setDepth(9000);
         this.physics.add.collider(this.player, wallLayer)
@@ -195,6 +202,36 @@ class GameScene extends Phaser.Scene {
             this.time.delayedCall(3000, () => {
                 this.scene.restart();
             });
+        });
+        this.anims.create({
+            key: 'bosssIdle',
+            frames: this.anims.generateFrameNames('bosssIdle', { prefix: 'boss', end: 7, zeroPad: 5 }),
+            frameRate: 7,
+            scale: { x: 2, y: 2 }
+        });
+        this.anims.create({
+            key: 'bosssRun',
+            frames: this.anims.generateFrameNames('bosssRun', { prefix: 'bossRun', end: 7, zeroPad: 5 }),
+            frameRate: 8,
+            scale: { x: 2, y: 2 }
+        });
+        this.anims.create({
+            key: 'bosssAttack',
+            frames: this.anims.generateFrameNames('bosssAttack', { prefix: 'attack', end: 15, zeroPad: 5 }),
+            frameRate: 15,
+            scale: { x: 2, y: 2 }
+        });
+        this.anims.create({
+            key: 'bosssHit',
+            frames: this.anims.generateFrameNames('bosssHit', { prefix: 'hit', end: 2, zeroPad: 5 }),
+            frameRate: 3,
+            scale: { x: 2, y: 2 }
+        });
+        this.anims.create({
+            key: 'bosssDeath',
+            frames: this.anims.generateFrameNames('bosssDeath', { prefix: 'death', end: 7, zeroPad: 5 }),
+            frameRate: 8,
+            scale: { x: 2, y: 2  }
         });
 
         this.potionImage = this.add.image(sizes.width - 50, sizes.height - 50, "potion").setInteractive().setScrollFactor(0).setDepth(9009).setScale(1.5);
@@ -384,39 +421,48 @@ class GameScene extends Phaser.Scene {
             this.bossHealthBar.clear();
             const barWidth = sizes.width - 300;
             const barHeight = 20;
-
             boss.hp = Math.max(0, boss.hp);
-
+    
             const healthPercentage = boss.hp / boss.maxHp;
-
             const healthWidth = barWidth * healthPercentage;
-
+    
             this.bossHealthBar.fillStyle(0x000000);
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, barWidth, barHeight);
-
             this.bossHealthBar.fillStyle(0xff0000);
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
-
+    
             this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
-
+    
+            if (boss.hp <= boss.maxHp / 2) {
+                if (!boss.hasSplit) {
+                    const newBoss1 = new Enemy(this, boss.x - 50, boss.y - 200, 'bossIdle', 'bosss');
+                    const newBoss2 = new Enemy(this, boss.x + 50, boss.y + 200, 'bossIdle', 'bosss');
+                    newBoss1.setScale(2);
+                    newBoss2.setScale(2);
+                    newBoss1.speed *= 3; 
+                    newBoss2.speed *= 3;
+                    this.enemies.push(newBoss1, newBoss2);
+                    boss.hasSplit = true;
+                }
+            }
+    
             if (boss.hp <= 0) {
                 this.arrow.setVisible(true);
-
                 if (this.bossMusic.isPlaying) {
                     this.bossMusic.stop();
                 }
                 if (!this.bossDeathSound.isPlaying) {
                     this.bossDeathSound.play();
                 }
-
             }
         }
     }
+    
 
 
     createEnemies() {
         this.enemies = [];
-
+    
         const enemyData = [
             { x: 500, y: 540, sprite: "goblinIdle", type: "goblin" },
             { x: 900, y: 200, sprite: "setaIdle", type: "seta" },
@@ -432,7 +478,7 @@ class GameScene extends Phaser.Scene {
             { x: 2000, y: 1800, sprite: "goblinIdle", type: "goblin" },
             { x: 2650, y: 480, sprite: "bossIdle", type: "boss" },
         ];
-
+    
         enemyData.forEach(data => {
             const { x, y, sprite, type } = data;
             const enemy = new Enemy(this, x, y, sprite, type);
@@ -445,14 +491,42 @@ class GameScene extends Phaser.Scene {
                 enemy.setAnimations('boss');
                 enemy.setScale(3);
                 enemy.hp = enemy.maxHp;
+            } else if (type === "bosss") {
+                enemy.setAnimations('boss');
             }
-
+    
             this.enemies.push(enemy);
         });
-
+    
         this.setupCollisions();
+    
+        // Añadimos el bloque condicional para dividir el jefe si su vida es menor o igual a la mitad
+        this.enemies.forEach(enemy => {
+            if (enemy.enemyType === 'boss') {
+                enemy.hasSplit = false; // Aseguramos que la bandera hasSplit esté inicializada en falso
+            }
+        });
+    
+        this.time.addEvent({
+            delay: 1000, // Revisar cada segundo
+            callback: () => {
+                this.enemies.forEach(enemy => {
+                    if (enemy.enemyType === 'boss' && enemy.hp <= enemy.maxHp / 2 && !enemy.hasSplit) {
+                        const newBoss1 = new Enemy(this, enemy.x - 50, enemy.y - 200, 'bossIdle', 'bosss');
+                        const newBoss2 = new Enemy(this, enemy.x + 50, enemy.y + 200, 'bossIdle', 'bosss');
+                        newBoss1.setScale(2);
+                        newBoss2.setScale(2);
+                        newBoss1.speed *= 3;
+                        newBoss2.speed *= 3;
+                        this.enemies.push(newBoss1, newBoss2);
+                        enemy.hasSplit = true;
+                    }
+                });
+            },
+            loop: true
+        });
     }
-
+    
     setupCollisions() {
         this.enemies.forEach(enemy => {
             this.physics.add.collider(enemy, this.player, () => {
