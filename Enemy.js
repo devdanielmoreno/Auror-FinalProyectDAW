@@ -113,11 +113,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 frameRate: 5,
             });
             this.anims.create({
-                key: 'bossHit',
-                frames: this.anims.generateFrameNames('bossIdle', { prefix: 'boss', end: 5, zeroPad: 5 }),
-                frameRate: 6,
-            });
-            this.anims.create({
                 key: 'bossDeath',
                 frames: this.anims.generateFrameNames('bossDeath', { prefix: 'death', end: 4, zeroPad: 5 }),
                 frameRate: 4,

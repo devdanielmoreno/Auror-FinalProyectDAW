@@ -14,7 +14,7 @@ class EndScene extends Phaser.Scene {
             centerY - 60,
             "Gracias amigo mío,\nSabía que podía confiar en ti,\n-Rod",
             {
-                fontFamily: "Orbitron",
+                fontFamily: "Pixelify Sans",
                 fontSize: '50px',
                 fill: '#ffffff',
                 stroke: '#000000',
@@ -22,9 +22,8 @@ class EndScene extends Phaser.Scene {
                 align: 'center'
             }
         ).setOrigin(0.5);
-
-        const rodImage = this.add.image(
-            text.x + text.width / 2 + 180, 
+        this.add.image(
+            text.x + text.width / 2 + 230, 
             text.y - 10,
             'rod_image'
         ).setOrigin(0.5).setScale(0.3);
@@ -35,7 +34,7 @@ class EndScene extends Phaser.Scene {
                 this.cameras.main.height - 10, 
                 "Continuara...",
                 {
-                    fontFamily: "Orbitron",
+                    fontFamily: "Pixelify Sans",
                     fontSize: '50px',
                     fill: '#ffffff',
                     stroke: '#000000',

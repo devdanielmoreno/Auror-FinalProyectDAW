@@ -80,6 +80,7 @@ class OpcionesScene extends Phaser.Scene {
             volumeFill.setScale(1, this.volume);
             this.scene.get("scene-game").bgMusica.setVolume(this.volume);
             this.scene.get("scene-game").bossMusic.setVolume(this.volume);
+            this.scene.get("scene-game").segundaFase.setVolume(this.volume);
         });
 
         const volumeDownButton = this.add.image(sizes.width - 547, sizes.height / 2 + 130, 'volumeButton').setOrigin(0.5).setInteractive();
@@ -89,6 +90,7 @@ class OpcionesScene extends Phaser.Scene {
             volumeFill.setScale(1, this.volume);
             this.scene.get("scene-game").bgMusica.setVolume(this.volume);
             this.scene.get("scene-game").bossMusic.setVolume(this.volume);
+            this.scene.get("scene-game").segundaFase.setVolume(this.volume);
         });
 
         const menuButton = this.add.image(sizes.width / 2, sizes.height / 2 + 100, 'menuButton').setOrigin(0.5).setInteractive().setDepth(1);
@@ -160,6 +162,7 @@ class OpcionesScene extends Phaser.Scene {
         const gameScene = this.scene.get("scene-game");
         gameScene.bgMusica.resume();
         gameScene.bossMusic.resume();
+        gameScene.segundaFase.resume();
         this.scene.stop();
         this.scene.resume("scene-game");
     }

@@ -446,7 +446,6 @@ class GameScene extends Phaser.Scene {
 
             this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
 
-
             if (boss.hp <= 0) {
                 this.arrow.setVisible(true);
                 if (this.bossMusic.isPlaying || this.segundaFase.isPlaying) {
@@ -461,8 +460,6 @@ class GameScene extends Phaser.Scene {
             }
         }
     }
-
-
 
     createEnemies() {
         this.enemies = [];
@@ -524,7 +521,7 @@ class GameScene extends Phaser.Scene {
     
             this.setupCollisions();
             this.time.delayedCall(1000, () => {
-                this.segundaFase.play({volume: 0.5});
+                this.segundaFase.play({volume: 0.4});
             })
             
         }
