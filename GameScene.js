@@ -444,7 +444,7 @@ class GameScene extends Phaser.Scene {
             this.bossHealthBar.fillStyle(0xff0000);
             this.bossHealthBar.fillRect(sizes.width / 2 - barWidth / 2, sizes.height - 40, healthWidth, barHeight);
 
-            this.bossHealthText.setText(`Valea: La Destructora     ${boss.hp}/${boss.maxHp}`);
+            this.bossHealthText.setText(`Valea: El Destructor     ${boss.hp}/${boss.maxHp}`);
 
             if (boss.hp <= 0) {
                 this.arrow.setVisible(true);
