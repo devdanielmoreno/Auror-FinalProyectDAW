@@ -169,6 +169,8 @@ class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player, finalLayer, this.finalA, null, this);
         detrasLayer.setAlpha(0);
+        this.sagreLayer = sagreLayer;
+        sagreLayer.setAlpha(0);
         detrasLayer.setCollision(1053)
         this.physics.add.collider(this.player, detrasLayer);
         this.physics.add.collider(this.enemies, detrasLayer)
@@ -352,6 +354,7 @@ class GameScene extends Phaser.Scene {
         const bossss = this.enemies.find(enemy => enemy.enemyType === 'boss');
         if (bossss && bossss.hp <= bossss.maxHp / 2 ) {
             this.createBossEnemies();
+            this.sagreLayer.setAlpha(1);
             this.bossMusic.stop();
         }
         

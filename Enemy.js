@@ -156,8 +156,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     updateMovement() {
         if (this.hp <= 0 && !this.deathHandled) {
-            this.anims.play(`${this.enemyType}Death`, true);
-            this.setVelocity(0);
+            if (this.enemyType === 'boss') {
+                this.anims.play(`${this.enemyType}Death`, true);
+                this.setVelocity(0);
+                this.scene.ataqueBoss.play({volume: 0.5});
+            } else {
+                this.anims.play(`${this.enemyType}Death`, true);
+                this.setVelocity(0);
+            }
 
             if (this.enemyType !== "seta" && this.enemyType !== "boss" && this.enemyType !== "bosss") {
                 const moveDistance = this.flipX ? 50 : -50;
@@ -191,6 +197,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                         if (this.anims.play(`${this.enemyType}Attack`)) {
                             this.setVelocity(0);
                             this.anims.play(`${this.enemyType}Attack`, true);
+                            this.scene.pug.play({volume: 0.3});
                         }
                     });
                 } else{
