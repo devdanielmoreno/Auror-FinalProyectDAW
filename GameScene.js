@@ -101,6 +101,9 @@ class GameScene extends Phaser.Scene {
         this.load.audio("playerRoll", "assets/Musica/playerRoll.mp3");
         this.load.audio("healSound", "assets/Musica/healsound.wav");
         this.load.audio("bossDeathSound", "assets/Musica/bossDeath.mp3");
+        this.load.audio("segundaFase","assets/Musica/segundaFase.mp3");
+        this.load.audio("ataqueBoss", "assets/Musica/ataqueBoss.ogg");
+        this.load.audio("pug", "assets/Musica/puuug.ogg");
 
     }
 
@@ -116,6 +119,9 @@ class GameScene extends Phaser.Scene {
         this.bgMusica.loop = true;
         this.bossMusic = this.sound.add("bossMusic");
         this.bossDeathSound = this.sound.add('bossDeathSound');
+        this.segundaFase = this.sound.add('segundaFase');
+        this.ataqueBoss = this.sound.add('ataqueBoss');
+        this.pug = this.sound.add('pug');
 
 
         const map = this.make.tilemap({ key: 'tilemap' })
@@ -200,6 +206,7 @@ class GameScene extends Phaser.Scene {
             this.scene.pause();
             this.bgMusica.stop();
             this.bossMusic.stop();
+            this.segundaFase.stop();
             this.scene.run('scene-dead');
             this.time.delayedCall(3000, () => {
                 this.scene.restart();
@@ -311,6 +318,7 @@ class GameScene extends Phaser.Scene {
             this.scene.launch('scene-options');
             this.bgMusica.pause();
             this.bossMusic.pause();
+            this.segundaFase.pause();
         });
         if (Phaser.Input.Keyboard.JustDown(this.xKey)) {
             this.player.roll();
@@ -344,6 +352,7 @@ class GameScene extends Phaser.Scene {
         const bossss = this.enemies.find(enemy => enemy.enemyType === 'boss');
         if (bossss && bossss.hp <= bossss.maxHp / 2 ) {
             this.createBossEnemies();
+            this.bossMusic.stop();
         }
         
 
@@ -437,11 +446,14 @@ class GameScene extends Phaser.Scene {
 
             if (boss.hp <= 0) {
                 this.arrow.setVisible(true);
-                if (this.bossMusic.isPlaying) {
+                if (this.bossMusic.isPlaying || this.segundaFase.isPlaying) {
                     this.bossMusic.stop();
+                    this.segundaFase.stop();
                 }
                 if (!this.bossDeathSound.isPlaying) {
+                    this.time.delayedCall(1000, () => {
                     this.bossDeathSound.play();
+                    });
                 }
             }
         }
@@ -508,6 +520,10 @@ class GameScene extends Phaser.Scene {
             this.bossEnemiesCreated = true;
     
             this.setupCollisions();
+            this.time.delayedCall(1000, () => {
+                this.segundaFase.play({volume: 0.5});
+            })
+            
         }
     }
     setupCollisions() {

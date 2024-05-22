@@ -45,7 +45,7 @@ class OpcionesScene extends Phaser.Scene {
                 strokeThickness: 6
             }).setOrigin(0.5),
 
-            this.add.text(sizes.width / 2, sizes.height / 2 + 98, "Volver", {
+            this.add.text(sizes.width / 2, sizes.height / 2 + 98, "Reiniciar", {
                 fontSize: "20px",
                 fill: "white",
                 fontFamily: "Orbitron",
@@ -53,7 +53,7 @@ class OpcionesScene extends Phaser.Scene {
                 strokeThickness: 6
             }).setOrigin(0.5).setDepth(2),
 
-            this.add.text(sizes.width / 2, sizes.height / 2 + 197, "Reiniciar", {
+            this.add.text(sizes.width / 2, sizes.height / 2 + 197, "Volver", {
                 fontSize: "20px",
                 fill: "white",
                 fontFamily: "Orbitron",
@@ -91,7 +91,7 @@ class OpcionesScene extends Phaser.Scene {
             this.scene.get("scene-game").bossMusic.setVolume(this.volume);
         });
 
-        const menuButton = this.add.image(sizes.width / 2, sizes.height / 2 + 200, 'menuButton').setOrigin(0.5).setInteractive().setDepth(1);
+        const menuButton = this.add.image(sizes.width / 2, sizes.height / 2 + 100, 'menuButton').setOrigin(0.5).setInteractive().setDepth(1);
         menuButton.on("pointerdown", () => {
             this.cameras.main.fadeOut(1000, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -106,7 +106,7 @@ class OpcionesScene extends Phaser.Scene {
             this.showControlsMenu();
         });
 
-        const volverButton = this.add.image(sizes.width / 2, sizes.height / 2 + 100, 'menuButton').setOrigin(0.5).setInteractive().setDepth(1);
+        const volverButton = this.add.image(sizes.width / 2, sizes.height / 2 + 200, 'menuButton').setOrigin(0.5).setInteractive().setDepth(1);
         volverButton.on("pointerdown", () => {
             this.returnToGame();
         });
